@@ -1,12 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
 
 import { ANIMES, findAnimeBySlug } from "@/shared/config/animes";
+import { useSession } from "@/shared/session/SessionContext";
 import { DivergenceMeter } from "@/shared/ui/DivergenceMeter";
 
 const DEFAULT_WORLDLINE = "0.000000";
 
 export function Header() {
   const { pathname } = useLocation();
+  const { user } = useSession();
   const currentAnime = findAnimeBySlug(pathname.replace(/^\/|\/$/g, ""));
   const worldline = currentAnime?.worldline ?? DEFAULT_WORLDLINE;
 
@@ -56,10 +58,13 @@ export function Header() {
         Future Gadget Laboratory
       </Link>
 
-      <Link to="/profile" className="ml-auto transition-transform hover:scale-105">
+      <Link
+        to={user ? "/profile" : "/register"}
+        className="ml-auto transition-transform hover:scale-105"
+      >
         <img
           src="/img/register_bin.png"
-          alt="Профиль"
+          alt={user ? "Профиль" : "Регистрация"}
           className="h-12 w-auto transition duration-200 hover:scale-110 md:h-20"
         />
       </Link>
