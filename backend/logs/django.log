@@ -1,0 +1,828 @@
+2026-02-28 18:00:00,976 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-02-28 18:00:02,426 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-02-28 18:00:03,243 | WARNING | django.request | Not Found: /favicon.ico 
+2026-02-28 18:00:05,726 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=None 
+2026-02-28 18:00:06,556 | INFO | mainpage.views | Steins Gate zero page opened , user=None 
+2026-02-28 18:00:07,416 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=None 
+2026-02-28 18:00:08,044 | INFO | mainpage.views | Future Gadget Laboratory page opened , user=None 
+2026-02-28 18:00:09,402 | INFO | mainpage.views | Steins Gate zero page opened , user=None 
+2026-02-28 18:00:10,577 | INFO | mainpage.views | Future Gadget Laboratory page opened , user=None 
+2026-02-28 18:00:11,816 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=None 
+2026-02-28 18:00:12,874 | INFO | mainpage.views | Future Gadget Laboratory page opened , user=None 
+2026-02-28 18:01:27,726 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-02-28 18:01:29,573 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-02-28 18:01:30,264 | INFO | mainpage.views | Future Gadget Laboratory page opened , user=None 
+2026-02-28 18:05:03,535 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-02-28 18:05:05,036 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-02-28 18:05:06,071 | INFO | users.views | Registration page opened 
+2026-02-28 18:05:07,600 | INFO | users.views | Login page opened , user=None 
+2026-02-28 18:20:32,845 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-02-28 18:20:36,859 | INFO | mainpage.views | Future Gadget Laboratory page opened , user=None 
+2026-02-28 18:20:37,639 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-02-28 18:20:39,148 | INFO | users.views | Registration page opened 
+2026-02-28 18:20:50,683 | ERROR | django.request | Internal Server Error: /users/register/ 
+Traceback (most recent call last):
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\core\users\views.py", line 29, in register_view
+    num = email_verification(form.cleaned_data['email'])
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\core\users\views.py", line 20, in email_verification
+    send_mail(subject, message, from_email, [user_email], fail_silently=False)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\utils\deprecation.py", line 268, in wrapper
+    return func(*args, **kwargs)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\mail\__init__.py", line 108, in send_mail
+    return mail.send()
+           ~~~~~~~~~^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\mail\message.py", line 358, in send
+    return self.get_connection(fail_silently).send_messages([self])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\mail\backends\smtp.py", line 138, in send_messages
+    sent = self._send(message)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\mail\backends\smtp.py", line 154, in _send
+    self.connection.sendmail(from_email, recipients, message.as_bytes())
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\6385\AppData\Local\Programs\Python\Python313\Lib\smtplib.py", line 876, in sendmail
+    raise SMTPSenderRefused(code, resp, from_addr)
+smtplib.SMTPSenderRefused: (530, b'5.7.0 Authentication Required. For more information, go to\n5.7.0  https://support.google.com/accounts/troubleshooter/2402620. ffacd0b85a97d-4399c75b19esm18319316f8f.25 - gsmtp', 'None')
+2026-02-28 18:21:36,919 | ERROR | django.request | Internal Server Error: /users/register/ 
+Traceback (most recent call last):
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\core\users\views.py", line 29, in register_view
+    num = email_verification(form.cleaned_data['email'])
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\core\users\views.py", line 20, in email_verification
+    send_mail(subject, message, from_email, [user_email], fail_silently=False)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\utils\deprecation.py", line 268, in wrapper
+    return func(*args, **kwargs)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\mail\__init__.py", line 108, in send_mail
+    return mail.send()
+           ~~~~~~~~~^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\mail\message.py", line 358, in send
+    return self.get_connection(fail_silently).send_messages([self])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\mail\backends\smtp.py", line 138, in send_messages
+    sent = self._send(message)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\mail\backends\smtp.py", line 154, in _send
+    self.connection.sendmail(from_email, recipients, message.as_bytes())
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\6385\AppData\Local\Programs\Python\Python313\Lib\smtplib.py", line 876, in sendmail
+    raise SMTPSenderRefused(code, resp, from_addr)
+smtplib.SMTPSenderRefused: (530, b'5.7.0 Authentication Required. For more information, go to\n5.7.0  https://support.google.com/accounts/troubleshooter/2402620. ffacd0b85a97d-439ad3daf89sm5473365f8f.20 - gsmtp', 'None')
+2026-02-28 18:21:46,138 | ERROR | django.request | Internal Server Error: /users/register/ 
+Traceback (most recent call last):
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\core\users\views.py", line 29, in register_view
+    num = email_verification(form.cleaned_data['email'])
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\core\users\views.py", line 20, in email_verification
+    send_mail(subject, message, from_email, [user_email], fail_silently=False)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\utils\deprecation.py", line 268, in wrapper
+    return func(*args, **kwargs)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\mail\__init__.py", line 108, in send_mail
+    return mail.send()
+           ~~~~~~~~~^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\mail\message.py", line 358, in send
+    return self.get_connection(fail_silently).send_messages([self])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\mail\backends\smtp.py", line 138, in send_messages
+    sent = self._send(message)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\mail\backends\smtp.py", line 154, in _send
+    self.connection.sendmail(from_email, recipients, message.as_bytes())
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\6385\AppData\Local\Programs\Python\Python313\Lib\smtplib.py", line 876, in sendmail
+    raise SMTPSenderRefused(code, resp, from_addr)
+smtplib.SMTPSenderRefused: (530, b'5.7.0 Authentication Required. For more information, go to\n5.7.0  https://support.google.com/accounts/troubleshooter/2402620. 5b1f17b1804b1-483bfb987b0sm85144285e9.13 - gsmtp', 'None')
+2026-02-28 18:21:51,090 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-02-28 18:21:53,579 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-02-28 18:21:55,840 | INFO | users.views | Registration page opened 
+2026-02-28 18:22:06,404 | INFO | users.views | Email verification email sent 
+2026-02-28 18:22:17,977 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-02-28 18:22:42,004 | INFO | mainpage.views | Future Gadget Laboratory page opened , user=mailor 
+2026-02-28 18:22:42,764 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-02-28 18:23:05,616 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-02-28 18:23:05,690 | INFO | mainpage.views | Anime Steins;Gate comment Cool anime , user=mailor 
+2026-02-28 18:23:05,742 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-02-28 18:23:10,799 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-02-28 18:24:38,445 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-02-28 18:49:06,040 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-02-28 18:49:07,658 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:49:08,883 | WARNING | django.request | Not Found: /favicon.ico 
+2026-02-28 18:49:24,754 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:49:24,819 | INFO | mainpage.views | Anime Steins;Gate comment ÛÈˆÛÈˆ , user=mailor-admin 
+2026-02-28 18:49:24,866 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:49:29,345 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:49:29,351 | INFO | mainpage.views | Anime Steins;Gate comment ÛÈˆÛÈˆ , user=mailor-admin 
+2026-02-28 18:49:29,393 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:49:33,135 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:49:33,183 | INFO | mainpage.views | Anime Steins;Gate comment ÈÛÈˆÛ , user=mailor-admin 
+2026-02-28 18:49:33,241 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:49:36,789 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:49:36,837 | INFO | mainpage.views | Anime Steins;Gate comment ÛÈˆÛÈˆ , user=mailor-admin 
+2026-02-28 18:49:36,880 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:49:41,125 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:49:41,130 | INFO | mainpage.views | Anime Steins;Gate comment ÛÈˆÛÈˆ , user=mailor-admin 
+2026-02-28 18:49:41,178 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:49:45,256 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:49:45,262 | INFO | mainpage.views | Anime Steins;Gate comment Ô‡˚Û‚ , user=mailor-admin 
+2026-02-28 18:49:45,303 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:49:47,207 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:55:11,869 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:55:15,304 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:55:17,814 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:55:21,130 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:55:25,725 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor-admin 
+2026-02-28 18:55:29,123 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor-admin 
+2026-02-28 18:55:30,983 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:55:49,876 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:55:56,932 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:55:59,005 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:56:36,634 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:56:39,880 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-02-28 18:56:42,642 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-01 02:12:13,575 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-01 02:12:15,828 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-01 02:12:18,509 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-01 02:12:23,255 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-01 02:12:33,467 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-01 02:12:34,541 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor-admin 
+2026-03-01 02:12:39,615 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor-admin 
+2026-03-01 02:12:48,311 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor-admin 
+2026-03-01 02:13:06,883 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-01 21:01:11,093 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-01 21:01:13,167 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-01 21:01:14,669 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-01 21:01:17,250 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor-admin 
+2026-03-01 21:01:39,798 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor-admin 
+2026-03-01 21:01:55,794 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-01 21:02:01,674 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor-admin 
+2026-03-01 21:02:13,033 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-01 21:02:25,159 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor-admin 
+2026-03-01 21:03:07,925 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-01 21:03:14,377 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-01 21:05:02,903 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-01 21:05:03,814 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-01 21:05:09,076 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-01 21:05:17,455 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\mainpage\constants.py changed, reloading. 
+2026-03-01 21:05:17,949 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-01 21:05:18,493 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-01 21:05:24,342 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-01 21:05:36,637 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\mainpage\constants.py changed, reloading. 
+2026-03-01 21:05:37,169 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-01 21:06:34,032 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\mainpage\constants.py changed, reloading. 
+2026-03-01 21:06:34,635 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-01 21:06:36,587 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-01 21:06:39,189 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor-admin 
+2026-03-01 21:06:45,484 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor-admin 
+2026-03-01 21:06:53,234 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-01 21:10:08,771 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\mainpage\constants.py changed, reloading. 
+2026-03-01 21:10:09,198 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-01 21:11:41,546 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor-admin 
+2026-03-01 21:11:46,468 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor-admin 
+2026-03-01 21:11:52,041 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor-admin 
+2026-03-01 21:11:55,129 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor-admin 
+2026-03-01 21:12:08,448 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-01 21:12:15,409 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor-admin 
+2026-03-01 21:12:17,708 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-01 21:12:25,388 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor-admin 
+2026-03-01 21:12:30,878 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-01 21:12:33,730 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-01 21:12:39,300 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-01 21:15:56,006 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor-admin 
+2026-03-01 21:15:57,591 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor-admin 
+2026-03-01 21:15:58,549 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor-admin 
+2026-03-01 21:16:02,297 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor-admin 
+2026-03-01 21:16:04,628 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor-admin 
+2026-03-01 21:16:07,578 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-01 22:01:53,870 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-01 22:01:56,066 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-01 22:01:57,867 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-01 22:01:58,503 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor-admin 
+2026-03-01 22:01:59,530 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor-admin 
+2026-03-01 22:17:50,868 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-01 22:17:52,510 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-01 22:17:55,236 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor-admin 
+2026-03-01 22:23:54,378 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-01 22:23:56,151 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-01 22:24:11,257 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor-admin 
+2026-03-01 22:24:13,108 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor-admin 
+2026-03-01 22:24:14,350 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor-admin 
+2026-03-01 22:24:16,296 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor-admin 
+2026-03-02 17:36:22,717 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-02 17:36:24,481 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-02 17:36:27,404 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-02 17:36:30,029 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor-admin 
+2026-03-02 17:36:31,284 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor-admin 
+2026-03-02 17:36:32,254 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor-admin 
+2026-03-02 17:36:32,967 | INFO | mainpage.views | Future Gadget Laboratory page opened , user=mailor-admin 
+2026-03-02 17:36:35,416 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor-admin 
+2026-03-02 17:36:41,568 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-02 20:06:05,086 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-02 20:06:06,308 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-02 20:06:09,170 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor-admin 
+2026-03-02 20:06:14,314 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor-admin 
+2026-03-02 20:06:17,303 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor-admin 
+2026-03-02 20:06:20,797 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor-admin 
+2026-03-02 20:06:23,797 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-02 20:06:25,804 | INFO | mainpage.views | Future Gadget Laboratory page opened , user=mailor-admin 
+2026-03-02 20:06:27,911 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor-admin 
+2026-03-02 20:06:30,779 | INFO | mainpage.views | Future Gadget Laboratory page opened , user=mailor-admin 
+2026-03-02 20:06:32,072 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-04 01:50:31,785 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-04 01:50:52,782 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-04 01:50:54,067 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-04 01:50:55,686 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-04 01:50:59,713 | INFO | mainpage.views | Future Gadget Laboratory page opened , user=mailor-admin 
+2026-03-04 01:51:02,118 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-04 01:51:16,291 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor-admin 
+2026-03-05 17:58:19,508 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-05 17:58:56,804 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\core\settings.py changed, reloading. 
+2026-03-05 17:58:57,853 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-05 17:59:30,635 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\core\settings.py changed, reloading. 
+2026-03-05 17:59:31,186 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-05 18:15:52,633 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\core\settings.py changed, reloading. 
+2026-03-05 18:15:53,115 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-05 18:16:37,735 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\core\settings.py changed, reloading. 
+2026-03-05 18:16:38,264 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-05 18:17:03,362 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\core\settings.py changed, reloading. 
+2026-03-05 18:17:03,876 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-05 18:17:10,332 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\core\settings.py changed, reloading. 
+2026-03-05 18:17:10,863 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-05 18:17:17,375 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\core\settings.py changed, reloading. 
+2026-03-05 18:17:17,868 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-05 18:17:25,742 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-05 18:17:56,005 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\core\settings.py changed, reloading. 
+2026-03-05 18:17:56,504 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-05 18:18:51,672 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-05 18:21:30,523 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-05 18:21:37,867 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\core\settings.py changed, reloading. 
+2026-03-05 18:21:38,315 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-05 18:24:43,405 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-05 18:24:58,243 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-05 18:24:59,674 | INFO | mainpage.views | Steins Gate page opened , user=mailor-admin 
+2026-03-05 18:25:02,018 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-11 16:43:25,530 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-11 16:43:27,860 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-11 16:43:29,503 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-11 16:43:30,269 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=None 
+2026-03-11 16:43:31,301 | INFO | mainpage.views | Steins Gate zero page opened , user=None 
+2026-03-11 16:43:33,150 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=None 
+2026-03-11 16:43:34,298 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-11 15:21:56,747 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-11 15:23:13,175 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-11 15:23:14,207 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-11 15:23:18,361 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=None 
+2026-03-11 15:23:20,911 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-11 15:23:27,554 | INFO | users.views | Registration page opened 
+2026-03-11 15:23:42,863 | INFO | users.views | Email verification email sent 
+2026-03-11 15:23:52,245 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-11 15:23:53,632 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-11 15:24:01,782 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-11 15:24:01,804 | INFO | mainpage.views | Anime Steins;Gate comment –ë–õ–£–ë–£–ï–ï—É—Ü–µ–¥–¥ , user=mailor 
+2026-03-11 15:24:01,863 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-11 15:24:05,627 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor 
+2026-03-11 17:25:19,443 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-11 15:30:50,196 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-11 15:31:15,908 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-11 17:33:52,120 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-11 17:33:53,653 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-11 17:33:58,838 | INFO | users.views | Registration page opened 
+2026-03-11 17:37:21,318 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-11 17:37:22,761 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-11 17:37:24,792 | INFO | users.views | Registration page opened 
+2026-03-11 17:37:25,786 | INFO | users.views | Login page opened , user=None 
+2026-03-11 17:37:32,038 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-11 17:37:42,989 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-11 17:37:43,062 | INFO | mainpage.views | Anime Steins;Gate comment Yea, yeah, yeaaaa , user=mailor 
+2026-03-11 17:37:43,106 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-13 16:59:19,631 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-13 16:59:21,645 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-13 16:59:23,289 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-13 16:59:25,533 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor 
+2026-03-13 16:59:26,520 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor 
+2026-03-13 16:59:27,470 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor 
+2026-03-13 16:59:28,588 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-13 17:01:05,227 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor 
+2026-03-13 17:01:07,178 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-16 21:48:54,288 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-16 21:48:56,344 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-16 21:48:56,436 | ERROR | django.request | Internal Server Error: /steins-gate/ 
+Traceback (most recent call last):
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\core\mainpage\views.py", line 83, in steins_gate_page
+    return _anime_page(request, "SteinsGate", "steins-gate_page.html")
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\core\mainpage\views.py", line 16, in _anime_page
+    anime, _ = AnimeDescription.objects.get_or_create(name=anime_name,defaults=ANIME_DEFAULTS[anime_name],)
+                                                                               ~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'SteinsGate'
+2026-03-16 21:48:56,579 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-16 21:49:04,096 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\mainpage\views.py changed, reloading. 
+2026-03-16 21:49:04,678 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-16 21:49:06,112 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-17 22:39:02,185 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-17 22:39:03,847 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-17 22:39:05,571 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-17 22:39:10,627 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-17 22:39:11,775 | INFO | users.views | Registration page opened 
+2026-03-17 22:39:29,526 | INFO | users.views | Email verification email sent 
+2026-03-17 22:39:53,623 | INFO | mainpage.views | Steins Gate page opened , user=mailor3213 
+2026-03-17 22:40:08,717 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor3213 
+2026-03-17 22:40:11,331 | INFO | mainpage.views | Steins Gate page opened , user=mailor3213 
+2026-03-17 22:40:46,582 | INFO | mainpage.views | Steins Gate page opened , user=mailor3213 
+2026-03-17 22:40:46,627 | INFO | mainpage.views | Anime Steins;Gate comment gugu , user=mailor3213 
+2026-03-17 22:40:46,684 | INFO | mainpage.views | Steins Gate page opened , user=mailor3213 
+2026-03-17 22:40:50,391 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-20 20:05:12,366 | ERROR | django.request | Internal Server Error: /users/register/ 
+Traceback (most recent call last):
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\middleware.py", line 12, in process_request
+    request._messages = default_storage(request)
+                        ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\__init__.py", line 12, in default_storage
+    return import_string(settings.MESSAGE_STORAGE)(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\fallback.py", line 17, in __init__
+    storage_class(*args, **kwargs) for storage_class in self.storage_classes
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\cookie.py", line 92, in __init__
+    self.signer = signing.get_cookie_signer(salt=self.key_salt)
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\signing.py", line 113, in get_cookie_signer
+    key=_cookie_signer_key(settings.SECRET_KEY),
+                           ^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\conf\__init__.py", line 85, in __getattr__
+    raise ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
+django.core.exceptions.ImproperlyConfigured: The SECRET_KEY setting must not be empty.
+2026-03-20 20:05:12,448 | ERROR | django.request | Internal Server Error: /users/register/ 
+Traceback (most recent call last):
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\middleware.py", line 12, in process_request
+    request._messages = default_storage(request)
+                        ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\__init__.py", line 12, in default_storage
+    return import_string(settings.MESSAGE_STORAGE)(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\fallback.py", line 17, in __init__
+    storage_class(*args, **kwargs) for storage_class in self.storage_classes
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\cookie.py", line 92, in __init__
+    self.signer = signing.get_cookie_signer(salt=self.key_salt)
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\signing.py", line 113, in get_cookie_signer
+    key=_cookie_signer_key(settings.SECRET_KEY),
+                           ^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\conf\__init__.py", line 85, in __getattr__
+    raise ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
+django.core.exceptions.ImproperlyConfigured: The SECRET_KEY setting must not be empty.
+2026-03-20 20:05:13,315 | ERROR | django.request | Internal Server Error: /users/register/ 
+Traceback (most recent call last):
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\middleware.py", line 12, in process_request
+    request._messages = default_storage(request)
+                        ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\__init__.py", line 12, in default_storage
+    return import_string(settings.MESSAGE_STORAGE)(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\fallback.py", line 17, in __init__
+    storage_class(*args, **kwargs) for storage_class in self.storage_classes
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\cookie.py", line 92, in __init__
+    self.signer = signing.get_cookie_signer(salt=self.key_salt)
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\signing.py", line 113, in get_cookie_signer
+    key=_cookie_signer_key(settings.SECRET_KEY),
+                           ^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\conf\__init__.py", line 85, in __getattr__
+    raise ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
+django.core.exceptions.ImproperlyConfigured: The SECRET_KEY setting must not be empty.
+2026-03-20 20:05:13,319 | ERROR | django.request | Internal Server Error: /users/register/ 
+Traceback (most recent call last):
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\middleware.py", line 12, in process_request
+    request._messages = default_storage(request)
+                        ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\__init__.py", line 12, in default_storage
+    return import_string(settings.MESSAGE_STORAGE)(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\fallback.py", line 17, in __init__
+    storage_class(*args, **kwargs) for storage_class in self.storage_classes
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\cookie.py", line 92, in __init__
+    self.signer = signing.get_cookie_signer(salt=self.key_salt)
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\signing.py", line 113, in get_cookie_signer
+    key=_cookie_signer_key(settings.SECRET_KEY),
+                           ^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\conf\__init__.py", line 85, in __getattr__
+    raise ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
+django.core.exceptions.ImproperlyConfigured: The SECRET_KEY setting must not be empty.
+2026-03-20 20:05:13,746 | ERROR | django.request | Internal Server Error: /steins-gate/ 
+Traceback (most recent call last):
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\middleware.py", line 12, in process_request
+    request._messages = default_storage(request)
+                        ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\__init__.py", line 12, in default_storage
+    return import_string(settings.MESSAGE_STORAGE)(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\fallback.py", line 17, in __init__
+    storage_class(*args, **kwargs) for storage_class in self.storage_classes
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\cookie.py", line 92, in __init__
+    self.signer = signing.get_cookie_signer(salt=self.key_salt)
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\signing.py", line 113, in get_cookie_signer
+    key=_cookie_signer_key(settings.SECRET_KEY),
+                           ^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\conf\__init__.py", line 85, in __getattr__
+    raise ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
+django.core.exceptions.ImproperlyConfigured: The SECRET_KEY setting must not be empty.
+2026-03-20 20:05:16,530 | ERROR | django.request | Internal Server Error: /steins-gate/ 
+Traceback (most recent call last):
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\middleware.py", line 12, in process_request
+    request._messages = default_storage(request)
+                        ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\__init__.py", line 12, in default_storage
+    return import_string(settings.MESSAGE_STORAGE)(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\fallback.py", line 17, in __init__
+    storage_class(*args, **kwargs) for storage_class in self.storage_classes
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\cookie.py", line 92, in __init__
+    self.signer = signing.get_cookie_signer(salt=self.key_salt)
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\signing.py", line 113, in get_cookie_signer
+    key=_cookie_signer_key(settings.SECRET_KEY),
+                           ^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\conf\__init__.py", line 85, in __getattr__
+    raise ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
+django.core.exceptions.ImproperlyConfigured: The SECRET_KEY setting must not be empty.
+2026-03-20 20:05:16,948 | ERROR | django.request | Internal Server Error: /steins-gate/ 
+Traceback (most recent call last):
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\middleware.py", line 12, in process_request
+    request._messages = default_storage(request)
+                        ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\__init__.py", line 12, in default_storage
+    return import_string(settings.MESSAGE_STORAGE)(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\fallback.py", line 17, in __init__
+    storage_class(*args, **kwargs) for storage_class in self.storage_classes
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\cookie.py", line 92, in __init__
+    self.signer = signing.get_cookie_signer(salt=self.key_salt)
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\signing.py", line 113, in get_cookie_signer
+    key=_cookie_signer_key(settings.SECRET_KEY),
+                           ^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\conf\__init__.py", line 85, in __getattr__
+    raise ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
+django.core.exceptions.ImproperlyConfigured: The SECRET_KEY setting must not be empty.
+2026-03-20 20:05:16,951 | ERROR | django.request | Internal Server Error: /steins-gate/ 
+Traceback (most recent call last):
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\middleware.py", line 12, in process_request
+    request._messages = default_storage(request)
+                        ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\__init__.py", line 12, in default_storage
+    return import_string(settings.MESSAGE_STORAGE)(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\fallback.py", line 17, in __init__
+    storage_class(*args, **kwargs) for storage_class in self.storage_classes
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\cookie.py", line 92, in __init__
+    self.signer = signing.get_cookie_signer(salt=self.key_salt)
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\signing.py", line 113, in get_cookie_signer
+    key=_cookie_signer_key(settings.SECRET_KEY),
+                           ^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\conf\__init__.py", line 85, in __getattr__
+    raise ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
+django.core.exceptions.ImproperlyConfigured: The SECRET_KEY setting must not be empty.
+2026-03-20 20:05:16,954 | ERROR | django.request | Internal Server Error: /steins-gate/ 
+Traceback (most recent call last):
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\middleware.py", line 12, in process_request
+    request._messages = default_storage(request)
+                        ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\__init__.py", line 12, in default_storage
+    return import_string(settings.MESSAGE_STORAGE)(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\fallback.py", line 17, in __init__
+    storage_class(*args, **kwargs) for storage_class in self.storage_classes
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\cookie.py", line 92, in __init__
+    self.signer = signing.get_cookie_signer(salt=self.key_salt)
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\signing.py", line 113, in get_cookie_signer
+    key=_cookie_signer_key(settings.SECRET_KEY),
+                           ^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\conf\__init__.py", line 85, in __getattr__
+    raise ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
+django.core.exceptions.ImproperlyConfigured: The SECRET_KEY setting must not be empty.
+2026-03-20 20:05:16,957 | ERROR | django.request | Internal Server Error: /steins-gate/ 
+Traceback (most recent call last):
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\middleware.py", line 12, in process_request
+    request._messages = default_storage(request)
+                        ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\__init__.py", line 12, in default_storage
+    return import_string(settings.MESSAGE_STORAGE)(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\fallback.py", line 17, in __init__
+    storage_class(*args, **kwargs) for storage_class in self.storage_classes
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\contrib\messages\storage\cookie.py", line 92, in __init__
+    self.signer = signing.get_cookie_signer(salt=self.key_salt)
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\signing.py", line 113, in get_cookie_signer
+    key=_cookie_signer_key(settings.SECRET_KEY),
+                           ^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\6385\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\conf\__init__.py", line 85, in __getattr__
+    raise ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
+django.core.exceptions.ImproperlyConfigured: The SECRET_KEY setting must not be empty.
+2026-03-20 20:06:22,205 | INFO | users.views | Email verification email sent 
+2026-03-20 20:06:23,008 | INFO | users.views | Email verification email sent 
+2026-03-20 20:06:23,510 | INFO | users.views | Email verification email sent 
+2026-03-20 20:06:23,911 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-20 20:06:24,724 | INFO | mainpage.views | Steins Gate page opened , user=mayuri 
+2026-03-20 20:06:25,590 | INFO | mainpage.views | Steins Gate page opened , user=mayuri 
+2026-03-20 20:06:25,596 | INFO | mainpage.views | Anime Steins;Gate comment Tuturu~! , user=mayuri 
+2026-03-20 20:06:26,793 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-20 20:06:27,388 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-20 20:06:27,394 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-20 20:06:27,398 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-20 20:06:27,402 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-20 20:06:34,388 | INFO | users.views | Email verification email sent 
+2026-03-20 20:06:35,191 | INFO | users.views | Email verification email sent 
+2026-03-20 20:06:35,610 | INFO | users.views | Email verification email sent 
+2026-03-20 20:06:36,002 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-20 20:06:36,827 | INFO | mainpage.views | Steins Gate page opened , user=mayuri 
+2026-03-20 20:06:37,642 | INFO | mainpage.views | Steins Gate page opened , user=mayuri 
+2026-03-20 20:06:37,644 | INFO | mainpage.views | Anime Steins;Gate comment Tuturu~! , user=mayuri 
+2026-03-20 20:06:38,855 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-20 20:06:39,268 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-20 20:06:39,273 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-20 20:06:39,278 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-20 20:06:39,282 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-20 20:06:53,612 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-20 20:06:57,568 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-20 20:06:58,695 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-20 20:07:01,975 | INFO | users.views | Registration page opened 
+2026-03-20 20:07:04,163 | INFO | users.views | Login page opened , user=None 
+2026-03-20 20:07:16,592 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-20 20:07:34,618 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-20 20:07:37,734 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-20 20:07:37,752 | INFO | mainpage.views | Anime Steins;Gate comment fds , user=mailor 
+2026-03-20 20:07:37,796 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-20 20:07:41,672 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor 
+2026-03-20 20:07:44,159 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor 
+2026-03-20 20:07:44,208 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor 
+2026-03-20 20:07:54,505 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor 
+2026-03-20 20:07:54,550 | INFO | mainpage.views | Anime Steins;Gate: Kyoukaimenjou no Missing Link comment hfgfgh , user=mailor 
+2026-03-20 20:07:54,594 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor 
+2026-03-20 20:09:03,407 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor 
+2026-03-20 20:09:09,142 | INFO | mainpage.views | Future Gadget Laboratory page opened , user=mailor 
+2026-03-20 20:09:11,872 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor 
+2026-03-20 20:09:15,077 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor 
+2026-03-20 20:09:15,086 | INFO | mainpage.views | Anime Steins;Gate 0 comment ÌÓ¯Í5Â6Î , user=mailor 
+2026-03-20 20:09:15,130 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor 
+2026-03-20 20:09:18,263 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor 
+2026-03-20 20:09:33,337 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-22 01:20:21,688 | INFO | users.views | Email verification email sent 
+2026-03-22 01:20:22,474 | INFO | users.views | Email verification email sent 
+2026-03-22 01:20:22,875 | INFO | users.views | Email verification email sent 
+2026-03-22 01:20:23,270 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-22 01:20:24,045 | INFO | mainpage.views | Steins Gate page opened , user=mayuri 
+2026-03-22 01:20:24,833 | INFO | mainpage.views | Steins Gate page opened , user=mayuri 
+2026-03-22 01:20:24,834 | INFO | mainpage.views | Anime Steins;Gate comment Tuturu~! , user=mayuri 
+2026-03-22 01:20:25,980 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-22 01:20:26,383 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-22 01:20:26,389 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-22 01:20:26,393 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-22 01:20:26,397 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-03-22 01:20:41,923 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-22 01:20:43,793 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-25 22:37:52,124 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-25 22:37:56,172 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-25 22:37:58,306 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-25 22:38:11,768 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor 
+2026-03-25 22:38:18,000 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-25 22:42:33,484 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor 
+2026-03-25 22:48:51,430 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor 
+2026-03-25 22:49:04,790 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor 
+2026-03-25 22:50:04,196 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor 
+2026-03-25 22:50:06,322 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor 
+2026-03-25 22:50:09,686 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor 
+2026-03-25 22:50:12,794 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor 
+2026-03-25 22:50:15,426 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-25 22:50:17,499 | INFO | mainpage.views | Future Gadget Laboratory page opened , user=mailor 
+2026-03-25 23:03:21,215 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-25 23:03:22,321 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-25 23:03:26,384 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor 
+2026-03-25 23:03:32,385 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor 
+2026-03-25 23:03:38,807 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor 
+2026-03-26 23:58:29,274 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-26 23:58:30,736 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-26 23:58:32,068 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-27 00:00:17,137 | WARNING | django.request | Not Found: /.well-known/appspecific/com.chrome.devtools.json 
+2026-03-27 00:25:40,351 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-27 00:25:42,031 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-27 00:25:45,860 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=mailor 
+2026-03-27 00:25:48,735 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor 
+2026-03-27 00:25:51,657 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=mailor 
+2026-03-27 19:36:20,421 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-27 19:36:22,307 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-27 19:36:23,184 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-27 19:36:35,168 | WARNING | django.request | Not Found: /steins-gate/fsdfsfs 
+2026-03-27 19:36:41,575 | WARNING | django.request | Not Found: /steins-gate/fsdfsfs 
+2026-03-27 19:36:57,724 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-27 19:36:59,232 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-27 19:37:02,642 | WARNING | django.request | Not Found: /steins-gate/daad 
+2026-03-27 19:37:19,126 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\core\settings.py changed, reloading. 
+2026-03-27 19:37:19,542 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-27 19:37:22,692 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-27 19:37:23,624 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-27 19:37:26,489 | WARNING | django.request | Not Found: /steins-gatefs 
+2026-03-27 19:37:42,115 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-27 19:37:43,352 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-27 19:37:44,020 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-27 19:37:59,495 | WARNING | django.request | Not Found: /steins-gate/rwe 
+2026-03-27 19:38:05,584 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\core\settings.py changed, reloading. 
+2026-03-27 19:38:06,018 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-27 19:39:06,354 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-27 19:39:10,712 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-27 19:39:13,834 | WARNING | django.request | Not Found: /steins-gatedasdasdasd 
+2026-03-27 19:39:39,219 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-03-27 19:39:41,740 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-03-27 19:39:42,333 | WARNING | django.request | Not Found: /favicon.ico 
+2026-03-27 19:39:47,634 | WARNING | django.request | Not Found: /steins-gate/das 
+2026-03-27 19:39:53,636 | INFO | django.utils.autoreload | D:\Users\6385\PycharmProjects\SteinsGate_project\core\core\settings.py changed, reloading. 
+2026-03-27 19:39:54,108 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-04-02 01:51:46,052 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-04-02 01:51:48,738 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-04-02 01:51:48,829 | ERROR | django.request | Internal Server Error: /steins-gate/ 
+Traceback (most recent call last):
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedTable: Œÿ»¡ ¿:  ÓÚÌÓ¯ÂÌËÂ "mainpage_animedescription" ÌÂ ÒÛ˘ÂÒÚ‚ÛÂÚ
+LINE 1: ...ption", "mainpage_animedescription"."poster" FROM "mainpage_...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\core\mainpage\views.py", line 83, in steins_gate_page
+    return _anime_page(request, "Steins;Gate", "steins-gate_page.html")
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\core\mainpage\views.py", line 16, in _anime_page
+    anime, _ = AnimeDescription.objects.get_or_create(name=anime_name,defaults=ANIME_DEFAULTS[anime_name],)
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\db\models\query.py", line 987, in get_or_create
+    return self.get(**kwargs), False
+           ~~~~~~~~^^^^^^^^^^
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\db\models\query.py", line 635, in get
+    num = len(clone)
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\db\models\query.py", line 372, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\db\models\query.py", line 2000, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\db\models\query.py", line 95, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1624, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\db\utils.py", line 94, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\mailor\PycharmProjects\SteinsGate_project\.venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: Œÿ»¡ ¿:  ÓÚÌÓ¯ÂÌËÂ "mainpage_animedescription" ÌÂ ÒÛ˘ÂÒÚ‚ÛÂÚ
+LINE 1: ...ption", "mainpage_animedescription"."poster" FROM "mainpage_...
+                                                             ^
+
+2026-04-02 01:51:49,110 | WARNING | django.request | Not Found: /favicon.ico 
+2026-04-02 01:53:03,984 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-04-02 01:53:05,009 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-04-02 01:53:09,303 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=None 
+2026-04-06 19:46:15,289 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-04-06 19:46:17,892 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-04-06 19:46:24,730 | WARNING | django.request | Not Found: /favicon.ico 
+2026-04-06 19:46:32,558 | WARNING | django.request | Not Found: /.well-known/appspecific/com.chrome.devtools.json 
+2026-04-06 19:50:12,146 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-04-06 19:50:17,522 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=None 
+2026-04-06 19:50:22,142 | INFO | mainpage.views | Steins Gate zero page opened , user=None 
+2026-04-06 19:50:26,030 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=None 
+2026-04-06 19:50:28,355 | INFO | mainpage.views | Future Gadget Laboratory page opened , user=None 
+2026-04-06 19:50:30,953 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-04-10 21:49:05,567 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-04-10 21:49:07,541 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-04-10 21:49:08,966 | WARNING | django.request | Not Found: /favicon.ico 
+2026-04-10 21:49:11,648 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=None 
+2026-04-10 21:49:14,051 | INFO | mainpage.views | Steins Gate zero page opened , user=None 
+2026-04-10 21:49:20,331 | INFO | mainpage.views | Steins Gate: Load Region of Deja Vu page opened, user=None 
+2026-04-10 21:49:24,603 | INFO | users.views | Registration page opened 
+2026-04-10 21:49:26,143 | INFO | users.views | Login page opened , user=None 
+2026-04-10 21:49:53,836 | INFO | users.views | Registration page opened 
+2026-04-10 21:50:08,536 | INFO | users.views | Email verification email sent 
+2026-04-10 21:50:20,842 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-04-10 21:50:55,039 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-04-12 02:54:06,106 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-04-16 16:56:01,430 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-04-16 16:56:05,034 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-04-16 16:56:06,246 | WARNING | django.request | Not Found: /favicon.ico 
+2026-04-22 19:08:08,221 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-04-22 19:08:10,397 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-04-22 19:08:11,763 | WARNING | django.request | Not Found: /favicon.ico 
+2026-06-07 00:33:47,416 | INFO | django.utils.autoreload | Watching for file changes with StatReloader 
+2026-06-07 00:33:49,100 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-06-07 00:33:50,569 | WARNING | django.request | Not Found: /favicon.ico 
+2026-06-07 00:33:52,702 | INFO | mainpage.views | Steins Gate: Kyoukaimenjou no Missing Link, user=None 
+2026-06-07 00:33:54,848 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-06-07 00:33:55,640 | INFO | mainpage.views | Future Gadget Laboratory page opened , user=None 
+2026-06-07 00:33:57,201 | INFO | mainpage.views | Future Gadget Laboratory page opened , user=None 
+2026-06-07 00:34:09,897 | INFO | users.views | Registration page opened 
+2026-06-07 00:34:12,535 | INFO | users.views | Login page opened , user=None 
+2026-06-07 00:34:19,882 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-06-07 00:34:26,385 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-06-07 00:34:32,486 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-06-07 00:34:32,555 | INFO | mainpage.views | Anime Steins;Gate comment FKJJJ , user=mailor 
+2026-06-07 00:34:32,609 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-06-07 00:34:39,535 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-06-07 00:35:04,548 | INFO | mainpage.views | Steins Gate zero page opened , user=mailor 
+2026-06-07 00:35:07,096 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-06-07 00:35:18,060 | INFO | mainpage.views | Steins Gate page opened , user=None 
+2026-06-07 00:35:27,419 | INFO | users.views | Registration page opened 
+2026-06-07 00:35:29,117 | INFO | users.views | Login page opened , user=None 
+2026-06-07 00:35:39,953 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-06-07 00:35:41,186 | INFO | mainpage.views | Steins Gate page opened , user=mailor 
+2026-06-07 00:35:42,438 | INFO | mainpage.views | Future Gadget Laboratory page opened , user=mailor 
