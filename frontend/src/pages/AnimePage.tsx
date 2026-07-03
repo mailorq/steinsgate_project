@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import { Navigate, useParams } from "react-router-dom";
 
+import { CommentsSection } from "@/features/comments/CommentsSection";
 import { PlayerSwitcher } from "@/features/player/PlayerSwitcher";
+import { RatingStars } from "@/features/rating/RatingStars";
 import { findAnimeBySlug } from "@/shared/config/animes";
 import type { AnimeInfo } from "@/shared/config/animes";
 import { Faq } from "@/shared/ui/Faq";
@@ -25,7 +27,7 @@ export function AnimePage() {
       <AnimeDescription anime={anime} />
       <PlayerSwitcher players={anime.players} />
       <Faq />
-      <CommentsPlaceholder />
+      <CommentsSection animeSlug={anime.slug} />
     </>
   );
 }
@@ -55,15 +57,7 @@ function AnimeDescription({ anime }: { anime: AnimeInfo }) {
           </div>
           <Divider />
 
-          {/* Рейтинг и просмотры появятся после подключения API (фаза 2) */}
-          <div className="mb-4 flex items-center gap-4 text-sm text-zinc-400">
-            <span>
-              Рейтинг: <span className="text-zinc-500">нет оценок</span>
-            </span>
-            <span>
-              Просмотров: <span className="text-zinc-300">—</span>
-            </span>
-          </div>
+          <RatingStars animeSlug={anime.slug} />
           <Divider />
 
           <p className="line-clamp-[8] overflow-hidden text-sm leading-relaxed text-zinc-300 md:line-clamp-[10] md:text-lg">
@@ -77,17 +71,4 @@ function AnimeDescription({ anime }: { anime: AnimeInfo }) {
 
 function Divider() {
   return <div className="my-3 h-px w-full bg-zinc-600/60 md:my-6" />;
-}
-
-function CommentsPlaceholder() {
-  return (
-    <div className="mx-auto mb-6 max-w-[80rem] px-3 md:mb-10 md:px-6">
-      <div className="rounded-xl bg-zinc-800/80 p-4 md:p-8">
-        <h3 className="text-xl font-bold md:text-3xl">Комментарии</h3>
-        <p className="mt-3 text-sm text-zinc-400 md:text-base">
-          Раздел переезжает на новый API и скоро вернётся.
-        </p>
-      </div>
-    </div>
-  );
 }
