@@ -179,9 +179,3 @@ def save_watch_progress(request, anime_id):
         "duration": progress.duration,
         "percentage": progress.progress_percentage
     })
-
-def sitemap_view(request):
-    return render(request, "sitemap.xml", content_type="application/xml")
-
-def robots_view(request):
-    return render(request, "robots.txt", content_type="text/plain")
