@@ -98,10 +98,8 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            response = redirect("steins_gate_page")
-            response.set_cookie(key="username", value=user.username, max_age=60 * 60 * 24 * 7, httponly=True, secure=False, samesite='Lax',) # Перед деплоем поменяй secure на Тру
             logger.debug(f"User logged in , user={user.username}")
-            return response
+            return redirect("steins_gate_page")
     else:
         form = LoginForm()
         logger.info(f"Login page opened , user={request.user.username if request.user.is_authenticated else None}")
@@ -119,9 +117,6 @@ def logout_view(request):
 
 @login_required
 def profile_view(request):
-    print(request.user.username)
-    print(request.user.profile.nickname)
-
     return render(request, 'users/profile.html', {
         "user": request.user,
         "profile": request.user.profile,
