@@ -6,10 +6,7 @@ interface PlayerSwitcherProps {
   players: AnimePlayer[];
 }
 
-/**
- * Оба iframe остаются в DOM (переключение через hidden), чтобы смена
- * вкладки не сбрасывала состояние воспроизведения.
- */
+
 export function PlayerSwitcher({ players }: PlayerSwitcherProps) {
   const [activeIndex, setActiveIndex] = useState(0);
 

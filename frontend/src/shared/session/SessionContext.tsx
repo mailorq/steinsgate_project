@@ -10,7 +10,6 @@ export interface SessionUser {
 
 interface SessionContextValue {
   user: SessionUser | null;
-  /** true, пока сессия не подключена к API (фаза 2) */
   isDemo: boolean;
   updateUser: (patch: Partial<SessionUser>) => void;
   logout: () => void;
@@ -18,7 +17,7 @@ interface SessionContextValue {
 
 /**
  * TODO(api): заменить демо-пользователя на запрос сессии к django-ninja
- * (GET /api/auth/session) и убрать isDemo.
+ * (GET /api/auth/session) и убрать isDemo
  */
 const DEMO_USER: SessionUser = {
   username: "okabe",

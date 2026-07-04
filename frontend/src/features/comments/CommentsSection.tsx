@@ -18,7 +18,6 @@ export interface CommentData {
   createdAt: Date;
   likes: number;
   dislikes: number;
-  /** Реакция текущего пользователя (локально, до API) */
   myReaction: "like" | "dislike" | null;
 }
 
@@ -26,10 +25,6 @@ interface CommentsSectionProps {
   animeSlug: string;
 }
 
-/**
- * TODO(api): список, отправка и лайки работают на локальном состоянии.
- * После фазы 2 заменить на запросы к django-ninja (GET/POST /api/anime/{slug}/comments).
- */
 export function CommentsSection({ animeSlug }: CommentsSectionProps) {
   const { user } = useSession();
   const [comments, setComments] = useState<CommentData[]>([]);
@@ -37,7 +32,7 @@ export function CommentsSection({ animeSlug }: CommentsSectionProps) {
   const [page, setPage] = useState(1);
   const [isOpen, setIsOpen] = useState(() => localStorage.getItem(COMMENTS_OPEN_KEY) === "1");
 
-  void animeSlug; // понадобится при подключении API
+  void animeSlug;
 
   const totalPages = Math.max(1, Math.ceil(comments.length / COMMENTS_PER_PAGE));
   const pageComments = comments.slice((page - 1) * COMMENTS_PER_PAGE, page * COMMENTS_PER_PAGE);
@@ -75,7 +70,6 @@ export function CommentsSection({ animeSlug }: CommentsSectionProps) {
         if (comment.id !== commentId) {
           return comment;
         }
-        // Повтор той же реакции снимает её; противоположная — переключает
         const next = { ...comment };
         if (next.myReaction === reaction) {
           next.myReaction = null;

@@ -9,15 +9,14 @@ interface RatingStarsProps {
 }
 
 /**
- * TODO(api): оценка хранится локально. После фазы 2 —
- * POST /api/anime/{slug}/rating и средний рейтинг из ответа.
+ TODO(api): оценка хранится локально. П
  */
 export function RatingStars({ animeSlug }: RatingStarsProps) {
   const { user } = useSession();
   const [userRating, setUserRating] = useState<number | null>(null);
   const [hovered, setHovered] = useState<number | null>(null);
 
-  void animeSlug; // понадобится при подключении API
+  void animeSlug;
 
   return (
     <>
