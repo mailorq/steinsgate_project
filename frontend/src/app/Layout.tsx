@@ -5,7 +5,7 @@ import { Header } from "@/shared/ui/Header";
 
 export function Layout() {
   return (
-    <div className="min-h-screen bg-zinc-800 text-white">
+    <div className="min-h-screen text-white">
       <Header />
 
       <main className="pt-16 md:pt-24">
