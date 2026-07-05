@@ -1,11 +1,14 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
 from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from .forms import RegisterForm
-
-# Тесты, требовавшие рендера HTML-шаблонов (неверный код верификации, отображение ошибок формы), удалены вместе с HTML-слоем и вернутся при переходе на django-ninja
+from .models import EmailVerificationCode
+from . import services
 
 User = get_user_model()
 
@@ -47,6 +50,58 @@ class RegisterFormTest(TestCase):
         self.assertIn('email', form.errors)
 
 
+class VerificationServiceTest(TestCase):
+
+    def setUp(self):
+        self.user = services.register_user(
+            username='kurisu',
+            email='kurisu@gmail.com',
+            password='complex_pass_123',
+        )
+
+    def test_registered_user_is_inactive_with_code(self):
+        self.assertFalse(self.user.is_active)
+        self.assertEqual(len(self.user.verification_code.code), 6)
+
+    def test_correct_code_activates_user(self):
+        services.verify_email(user=self.user, code=self.user.verification_code.code)
+
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_active)
+        self.assertFalse(EmailVerificationCode.objects.filter(user=self.user).exists())
+
+    def test_wrong_code_raises_and_keeps_user_inactive(self):
+        with self.assertRaises(services.VerificationError):
+            services.verify_email(user=self.user, code='000000')
+
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_active)
+
+    def test_attempts_are_limited(self):
+        for _ in range(EmailVerificationCode.MAX_ATTEMPTS):
+            with self.assertRaises(services.VerificationError):
+                services.verify_email(user=self.user, code='000000')
+
+        with self.assertRaises(services.VerificationError):
+            services.verify_email(user=self.user, code=self.user.verification_code.code)
+
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_active)
+
+    def test_expired_code_rejected(self):
+        record = self.user.verification_code
+        record.created_at = timezone.now() - EmailVerificationCode.TTL - timedelta(minutes=1)
+        record.save(update_fields=['created_at'])
+
+        with self.assertRaises(services.VerificationError):
+            services.verify_email(user=self.user, code=record.code)
+
+    def test_inactive_user_cannot_login(self):
+        logged_in = self.client.login(username='kurisu', password='complex_pass_123')
+
+        self.assertFalse(logged_in)
+
+
 class AuthenticationTest(TestCase):
 
     def test_user_can_register_with_email_verification(self):
@@ -60,16 +115,15 @@ class AuthenticationTest(TestCase):
         self.assertRedirects(
             response, reverse('email_verification'), fetch_redirect_response=False
         )
-        self.assertFalse(User.objects.filter(username='kurisu').exists())
-        self.assertIn('verification_code', self.client.session)
-        self.assertIn('registration_data', self.client.session)
-
-        code = self.client.session['verification_code']
-        self.client.post(reverse('email_verification'), {'code': str(code)})
-
-        self.assertTrue(User.objects.filter(username='kurisu').exists())
 
         user = User.objects.get(username='kurisu')
+        self.assertFalse(user.is_active)
+
+        code = user.verification_code.code
+        self.client.post(reverse('email_verification'), {'code': code})
+
+        user.refresh_from_db()
+        self.assertTrue(user.is_active)
         self.assertEqual(int(self.client.session['_auth_user_id']), user.pk)
         self.assertTrue(hasattr(user, 'profile'))
         self.assertEqual(user.profile.nickname, 'kurisu')
