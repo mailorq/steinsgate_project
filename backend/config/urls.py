@@ -23,8 +23,10 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", RedirectView.as_view(pattern_name='steins_gate_page', permanent=False)),
-    path("", include("mainpage.urls")),
-    path("users/", include("users.urls")),
+    path("", include("catalog.urls")),
+    path("", include("comments.urls")),
+    path("", include("watch.urls")),
+    path("users/", include("accounts.urls")),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -48,24 +48,3 @@ class RegisterForm(forms.ModelForm):
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=150)
     password = forms.CharField(widget=forms.PasswordInput)
-
-    def clean(self):
-        cleaned_data = super().clean()
-        username = cleaned_data.get('username')
-        password = cleaned_data.get('password')
-
-        if username and password:
-            try:
-                user = User.objects.get(username=username)
-            except User.DoesNotExist:
-                raise forms.ValidationError("Invalid username or password")
-
-            if not user.check_password(password):
-                raise forms.ValidationError("Invalid username or password")
-
-            self._user = user
-
-        return cleaned_data
-
-    def get_user(self):
-        return self._user
