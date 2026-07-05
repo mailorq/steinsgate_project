@@ -13,8 +13,7 @@ import sys
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# .env должен быть загружен до чтения любых переменных окружения
-load_dotenv(BASE_DIR / ".env")
+load_dotenv(BASE_DIR.parent / ".env")
 
 # SECURITY WARNING: keep the secret key used in production secret
 SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-dev-only-key")
