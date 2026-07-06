@@ -4,8 +4,8 @@ from django.urls import reverse
 
 from catalog.models import AnimeDescription
 
-from .models import Comment
 from . import services
+from .models import Comment
 
 User = get_user_model()
 

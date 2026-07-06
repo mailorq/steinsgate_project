@@ -7,7 +7,7 @@ from django.utils import timezone
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    nickname = models.CharField(max_length=255, null=True, blank=True)
+    nickname = models.CharField(max_length=255, blank=True, default='')
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, default='avatars/default.jpg')
 
     def __str__(self):

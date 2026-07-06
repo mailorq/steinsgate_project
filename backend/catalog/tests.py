@@ -2,8 +2,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import AnimeDescription, ViewHistory
 from . import services
+from .models import AnimeDescription, ViewHistory
 
 User = get_user_model()
 

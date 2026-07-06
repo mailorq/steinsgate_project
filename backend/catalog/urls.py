@@ -1,8 +1,13 @@
 from django.urls import path
 from django.views.generic import RedirectView
+
 from .views import (
-    steins_gate_page, steins_gate_zero_page, steins_gate_load_region_page,
-    steins_gate_missing_link, future_gadget_laboratory_page, rate_anime
+    future_gadget_laboratory_page,
+    rate_anime,
+    steins_gate_load_region_page,
+    steins_gate_missing_link,
+    steins_gate_page,
+    steins_gate_zero_page,
 )
 
 urlpatterns = [

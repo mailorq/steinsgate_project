@@ -1,11 +1,13 @@
-from django.shortcuts import render, redirect
+import logging
+import os
+
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import RegisterForm, LoginForm
+from django.shortcuts import redirect, render
+
 from . import services
-import logging
-import os
+from .forms import LoginForm, RegisterForm
 
 logger = logging.getLogger(__name__)
 

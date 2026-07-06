@@ -28,7 +28,7 @@ def create_comment(*, user, anime, text: str) -> Comment:
         raise CommentRejected("Недопустимая длина комментария")
 
     comment = Comment.objects.create(user=user, anime=anime, text=cleaned)
-    logger.info(f"Anime {anime.name} comment {cleaned} , user={user.username}")
+    logger.info(f"Comment {comment.id} created, anime={anime.slug}, user={user.username}, length={len(cleaned)}")
     return comment
 
 

@@ -6,9 +6,9 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+from . import services
 from .forms import RegisterForm
 from .models import EmailVerificationCode
-from . import services
 
 User = get_user_model()
 

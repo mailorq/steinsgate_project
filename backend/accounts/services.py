@@ -1,12 +1,11 @@
 import logging
 import secrets
 
+from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
-from django.conf import settings
 from django.db import transaction
-from django.utils import timezone
 
 from .models import EmailVerificationCode
 
@@ -47,10 +46,10 @@ def verify_email(*, user: User, code: str) -> User:
     try:
         record = user.verification_code
     except EmailVerificationCode.DoesNotExist:
-        raise VerificationError("Код не найден. Пройдите регистрацию заново.")
+        raise VerificationError("Код не найден. Пройдите регистрацию заново.") from None
 
     if record.is_expired:
-        raise VerificationError("Код истёк. Пройдите регистрацию заново.")
+        raise VerificationError("Код истек. Пройдите регистрацию заново.")
 
     if record.attempts >= EmailVerificationCode.MAX_ATTEMPTS:
         raise VerificationError("Попытки исчерпаны. Пройдите регистрацию заново.")
@@ -75,10 +74,10 @@ def authenticate_user(*, request, username: str, password: str) -> User | None:
 def update_nickname(*, user: User, nickname: str) -> None:
     user.profile.nickname = nickname
     user.profile.save(update_fields=["nickname"])
-    logger.debug(f"Nickname changed , user={user.username} new_nickname={nickname} ")
+    logger.debug(f"Nickname changed, user={user.username}")
 
 
 def update_avatar(*, user: User, avatar) -> None:
     user.profile.avatar = avatar
     user.profile.save(update_fields=["avatar"])
-    logger.debug(f"Avatar changed, user={user.username}, avatar={avatar.name}")
+    logger.debug(f"Avatar changed, user={user.username}")

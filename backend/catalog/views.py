@@ -1,13 +1,15 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.core.paginator import Paginator
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from django.db.models import Count
-from comments import services as comment_services
-from .models import AnimeDescription
-from .constants import ANIME_DEFAULTS, ANIME_POSTERS, ANIME_PLAYERS, ANIME_QUESTIONS
-from . import services
 import logging
+
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.db.models import Count
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+
+from comments import services as comment_services
+
+from . import services
+from .models import AnimeDescription
 
 logger = logging.getLogger(__name__)
 
@@ -20,9 +22,7 @@ def get_client_ip(request):
 
 
 def _anime_page(request, anime_name, template):
-    anime, _ = AnimeDescription.objects.get_or_create(
-        name=anime_name, defaults=ANIME_DEFAULTS[anime_name],
-    )
+    anime = get_object_or_404(AnimeDescription, name=anime_name)
 
     services.register_view_event(
         anime=anime,
@@ -59,9 +59,6 @@ def _anime_page(request, anime_name, template):
     return render(request, template, {
         "anime": anime,
         "comments": page_obj,
-        "poster": ANIME_POSTERS.get(anime_name, ""),
-        "players": ANIME_PLAYERS.get(anime_name, {}),
-        "questions": ANIME_QUESTIONS,
         "user_rating": user_rating,
         "avg_rating": services.average_rating(anime),
         "total_views": anime.views.count(),

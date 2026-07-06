@@ -1,9 +1,17 @@
-from django.contrib import admin
-from django.urls import path , include
-from .views import logout_view , register_view , login_view, profile_view, profile_settings , change_nickname , change_avatar, email_verification_view
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import path
 
+from .views import (
+    change_avatar,
+    change_nickname,
+    email_verification_view,
+    login_view,
+    logout_view,
+    profile_settings,
+    profile_view,
+    register_view,
+)
 
 urlpatterns = [
     path('login/', login_view, name='login'),
