@@ -54,6 +54,9 @@ email_host = os.getenv('EMAIL_HOST_USER')
 password_email_host = os.getenv('EMAIL_HOST_PASSWORD')
 
 
+LOG_DIR = BASE_DIR / "logs"
+LOG_DIR.mkdir(exist_ok=True)
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -71,7 +74,7 @@ LOGGING = {
         },
         "file": {
             "class": "logging.FileHandler",
-            "filename": str(BASE_DIR / "logs" / "django.log"),
+            "filename": str(LOG_DIR / "django.log"),
             "formatter": "standard",
         },
     },
