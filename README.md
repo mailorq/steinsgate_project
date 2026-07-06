@@ -131,5 +131,4 @@ npm run build
 
 ## Authors
 
-- [mailor](https://github.com/mailorq) — frontend, backend
-- [oinqq](https://github.com/oniqq1) — backend
+- [mailor](https://github.com/mailorq) — fullstack
