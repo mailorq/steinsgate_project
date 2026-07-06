@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from django.urls import reverse
+
+from accounts.tests import csrf_headers
 
 from . import services
 from .models import AnimeDescription, ViewHistory
@@ -71,16 +72,61 @@ class CatalogServiceTest(TestCase):
             services.rate_anime(user=self.user, anime=self.anime, rating=6)
 
 
-class URLTest(TestCase):
+class CatalogApiTest(TestCase):
 
-    def test_steins_gate_url_resolves(self):
-        url = reverse('steins_gate_page')
-        self.assertEqual(url, '/steins-gate/')
+    def test_anime_list(self):
+        response = self.client.get('/api/anime')
 
-    def test_steins_gate_zero_url_resolves(self):
-        url = reverse('steins_gate_zero_page')
-        self.assertEqual(url, '/steins-gate-zero/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 4)
+        self.assertIn('steins-gate', [item['slug'] for item in response.json()])
 
-    def test_future_gadget_lab_url_resolves(self):
-        url = reverse('future_gadget_laboratory')
-        self.assertEqual(url, '/future-gadget-laboratory/')
+    def test_anime_detail_registers_deduplicated_view(self):
+        response = self.client.get('/api/anime/steins-gate')
+        self.client.get('/api/anime/steins-gate')
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data['name'], 'Steins;Gate')
+        self.assertEqual(data['season'], '2011 весна')
+        self.assertIsNone(data['avg_rating'])
+        self.assertEqual(ViewHistory.objects.count(), 1)
+
+    def test_unknown_slug_returns_404(self):
+        response = self.client.get('/api/anime/unknown')
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_rating_requires_auth(self):
+        response = self.client.post(
+            '/api/anime/steins-gate/rating', {'rating': 5}, content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_rating_flow(self):
+        User.objects.create_user(username='okabe', password='elpsykongroo')
+        self.client.login(username='okabe', password='elpsykongroo')
+
+        response = self.client.post(
+            '/api/anime/steins-gate/rating',
+            {'rating': 5},
+            content_type='application/json',
+            **csrf_headers(self.client),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'avg_rating': 5.0, 'user_rating': 5})
+
+    def test_rating_out_of_range_rejected(self):
+        User.objects.create_user(username='okabe', password='elpsykongroo')
+        self.client.login(username='okabe', password='elpsykongroo')
+
+        response = self.client.post(
+            '/api/anime/steins-gate/rating',
+            {'rating': 6},
+            content_type='application/json',
+            **csrf_headers(self.client),
+        )
+
+        self.assertEqual(response.status_code, 422)

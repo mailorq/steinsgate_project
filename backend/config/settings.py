@@ -114,7 +114,13 @@ MIDDLEWARE = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# В DEBUG письма выводятся в консоль, чтобы не тратить SMTP на разработке
+EMAIL_BACKEND = os.environ.get(
+    "EMAIL_BACKEND",
+    'django.core.mail.backends.console.EmailBackend'
+    if DEBUG
+    else 'django.core.mail.backends.smtp.EmailBackend',
+)
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465
@@ -160,11 +166,17 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT', ''),
     }
 }
+# Лимиты запросов к API: аутентификация и мутации
+API_AUTH_THROTTLE = os.environ.get("API_AUTH_THROTTLE", "30/m")
+API_WRITE_THROTTLE = os.environ.get("API_WRITE_THROTTLE", "20/m")
+
 if 'test' in sys.argv:
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': ':memory:',
     }
+    API_AUTH_THROTTLE = "10000/m"
+    API_WRITE_THROTTLE = "10000/m"
 
 
 # Password validation

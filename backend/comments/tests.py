@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
-from django.urls import reverse
+from django.test import TestCase
 
+from accounts.tests import csrf_headers
 from catalog.models import AnimeDescription
 
 from . import services
@@ -83,42 +83,76 @@ class CommentModelTest(TestCase):
         self.assertEqual(self.anime.comments.first().user, self.user)
 
 
-class CommentFunctionalityTest(TestCase):
+class CommentsApiTest(TestCase):
 
     def setUp(self):
-        self.client = Client()
-        self.user = User.objects.create_user(
-            username='mayuri',
-            password='tuturu'
-        )
+        self.user = User.objects.create_user(username='mayuri', password='tuturu_tuturu')
         self.anime = AnimeDescription.objects.get(slug='steins-gate')
-        self.url = reverse('steins_gate_page')
+        self.url = '/api/anime/steins-gate/comments'
 
-    def test_anonymous_user_cannot_comment(self):
-        response = self.client.post(self.url, {
-            'comment': 'Тест коммент'
-        })
+    def login(self):
+        self.client.login(username='mayuri', password='tuturu_tuturu')
+        return csrf_headers(self.client)
 
-        self.assertEqual(response.status_code, 302)
+    def test_anonymous_cannot_comment(self):
+        response = self.client.post(
+            self.url, {'text': 'Тест коммент'}, content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 401)
         self.assertEqual(Comment.objects.count(), 0)
 
     def test_logged_in_user_can_comment(self):
-        self.client.login(username='mayuri', password='tuturu')
+        headers = self.login()
 
-        response = self.client.post(self.url, {
-            'comment': 'Tuturu~!'
-        })
+        response = self.client.post(
+            self.url, {'text': 'Tuturu~!'}, content_type='application/json', **headers
+        )
 
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 201)
+        data = response.json()
+        self.assertEqual(data['text'], 'Tuturu~!')
+        self.assertEqual(data['author']['username'], 'mayuri')
         self.assertEqual(Comment.objects.count(), 1)
 
-        comment = Comment.objects.first()
-        self.assertEqual(comment.text, 'Tuturu~!')
-        self.assertEqual(comment.user, self.user)
+    def test_spam_link_rejected(self):
+        headers = self.login()
 
-    def test_empty_comment_not_saved(self):
-        self.client.login(username='mayuri', password='tuturu')
+        response = self.client.post(
+            self.url,
+            {'text': 'заходите на spam.xyz срочно'},
+            content_type='application/json',
+            **headers,
+        )
 
-        self.client.post(self.url, {'comment': '   '})
-
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(Comment.objects.count(), 0)
+
+    def test_pagination(self):
+        for i in range(7):
+            Comment.objects.create(user=self.user, anime=self.anime, text=f'Комментарий {i}')
+
+        first = self.client.get(self.url).json()
+        second = self.client.get(f'{self.url}?page=2').json()
+
+        self.assertEqual(len(first['items']), 6)
+        self.assertEqual(first['total_pages'], 2)
+        self.assertEqual(first['total'], 7)
+        self.assertEqual(len(second['items']), 1)
+
+    def test_reaction_flow(self):
+        comment = Comment.objects.create(user=self.user, anime=self.anime, text='El Psy Kongroo')
+        headers = self.login()
+
+        response = self.client.post(
+            f'/api/comments/{comment.id}/reaction',
+            {'is_like': True},
+            content_type='application/json',
+            **headers,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'likes': 1, 'dislikes': 0, 'rating': 1})
+
+        listed = self.client.get(self.url).json()
+        self.assertEqual(listed['items'][0]['my_reaction'], 'like')

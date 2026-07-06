@@ -3,51 +3,48 @@ from datetime import timedelta
 from django.contrib.auth import get_user_model
 from django.core import mail
 from django.test import TestCase
-from django.urls import reverse
 from django.utils import timezone
 
 from . import services
-from .forms import RegisterForm
 from .models import EmailVerificationCode
 
 User = get_user_model()
 
 
-class RegisterFormTest(TestCase):
+def csrf_headers(client):
+    client.get("/api/auth/csrf")
+    return {"HTTP_X_CSRFTOKEN": client.cookies["csrftoken"].value}
+
+
+class RegistrationServiceTest(TestCase):
 
     def test_email_domain_validation(self):
-        form = RegisterForm(data={
-            'username': 'test',
-            'email': 'test@blocked.com',
-            'password': 'pass_123',
-            'confirm_password': 'pass_123',
-        })
-
-        self.assertFalse(form.is_valid())
-        self.assertIn('email', form.errors)
-
-    def test_password_mismatch(self):
-        form = RegisterForm(data={
-            'username': 'test',
-            'email': 'test@gmail.com',
-            'password': 'complex_pass_123',
-            'confirm_password': 'different_pass_123',
-        })
-
-        self.assertFalse(form.is_valid())
+        with self.assertRaises(services.RegistrationError):
+            services.register_user(
+                username='test', email='test@blocked.com', password='complex_pass_123'
+            )
 
     def test_duplicate_email_rejected(self):
         User.objects.create_user(username='taken', email='taken@gmail.com', password='x')
 
-        form = RegisterForm(data={
-            'username': 'newuser',
-            'email': 'taken@gmail.com',
-            'password': 'complex_pass_123',
-            'confirm_password': 'complex_pass_123',
-        })
+        with self.assertRaises(services.RegistrationError):
+            services.register_user(
+                username='newuser', email='taken@gmail.com', password='complex_pass_123'
+            )
 
-        self.assertFalse(form.is_valid())
-        self.assertIn('email', form.errors)
+    def test_duplicate_username_rejected(self):
+        User.objects.create_user(username='taken', email='one@gmail.com', password='x')
+
+        with self.assertRaises(services.RegistrationError):
+            services.register_user(
+                username='taken', email='two@gmail.com', password='complex_pass_123'
+            )
+
+    def test_weak_password_rejected(self):
+        with self.assertRaises(services.RegistrationError):
+            services.register_user(
+                username='test', email='test@gmail.com', password='12345678'
+            )
 
 
 class VerificationServiceTest(TestCase):
@@ -102,47 +99,125 @@ class VerificationServiceTest(TestCase):
         self.assertFalse(logged_in)
 
 
-class AuthenticationTest(TestCase):
+class AuthApiTest(TestCase):
 
-    def test_user_can_register_with_email_verification(self):
-        response = self.client.post(reverse('register'), {
-            'username': 'kurisu',
-            'email': 'kurisu@gmail.com',
-            'password': 'complex_pass_123',
-            'confirm_password': 'complex_pass_123'
-        })
+    REGISTER_PAYLOAD = {
+        'username': 'kurisu',
+        'email': 'kurisu@gmail.com',
+        'password': 'complex_pass_123',
+    }
 
-        self.assertRedirects(
-            response, reverse('email_verification'), fetch_redirect_response=False
+    def register(self):
+        return self.client.post(
+            '/api/auth/register', self.REGISTER_PAYLOAD, content_type='application/json'
         )
 
+    def test_register_creates_inactive_user_and_sends_email(self):
+        response = self.register()
+
+        self.assertEqual(response.status_code, 201)
         user = User.objects.get(username='kurisu')
         self.assertFalse(user.is_active)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn('verification', mail.outbox[0].subject.lower())
 
-        code = user.verification_code.code
-        self.client.post(reverse('email_verification'), {'code': code})
+    def test_register_rejects_bad_domain(self):
+        response = self.client.post(
+            '/api/auth/register',
+            {**self.REGISTER_PAYLOAD, 'email': 'kurisu@blocked.com'},
+            content_type='application/json',
+        )
 
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(User.objects.filter(username='kurisu').exists())
+
+    def test_full_registration_flow(self):
+        self.register()
+        user = User.objects.get(username='kurisu')
+
+        wrong = self.client.post(
+            '/api/auth/verify-email', {'code': '000000'}, content_type='application/json'
+        )
+        self.assertEqual(wrong.status_code, 400)
+
+        response = self.client.post(
+            '/api/auth/verify-email',
+            {'code': user.verification_code.code},
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['user']['username'], 'kurisu')
         user.refresh_from_db()
         self.assertTrue(user.is_active)
         self.assertEqual(int(self.client.session['_auth_user_id']), user.pk)
-        self.assertTrue(hasattr(user, 'profile'))
         self.assertEqual(user.profile.nickname, 'kurisu')
 
-    def test_register_sends_email(self):
-        self.client.post(reverse('register'), {
-            'username': 'daru',
-            'email': 'daru@gmail.com',
-            'password': 'super_haker_123',
-            'confirm_password': 'super_haker_123'
-        })
+    def test_verify_without_pending_registration(self):
+        response = self.client.post(
+            '/api/auth/verify-email', {'code': '123456'}, content_type='application/json'
+        )
 
-        self.assertEqual(len(mail.outbox), 1)
-        self.assertIn('verification', mail.outbox[0].subject.lower())
-        self.assertEqual(mail.outbox[0].to, ['daru@gmail.com'])
+        self.assertEqual(response.status_code, 400)
 
-    def test_user_can_login(self):
-        User.objects.create_user(username='daru', password='super_haker')
+    def test_login_and_session(self):
+        User.objects.create_user(username='daru', password='super_haker_123')
 
-        logged_in = self.client.login(username='daru', password='super_haker')
+        anonymous = self.client.get('/api/auth/session')
+        self.assertIsNone(anonymous.json()['user'])
 
-        self.assertTrue(logged_in)
+        bad = self.client.post(
+            '/api/auth/login',
+            {'username': 'daru', 'password': 'wrong'},
+            content_type='application/json',
+        )
+        self.assertEqual(bad.status_code, 400)
+
+        response = self.client.post(
+            '/api/auth/login',
+            {'username': 'daru', 'password': 'super_haker_123'},
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['user']['username'], 'daru')
+
+        session = self.client.get('/api/auth/session')
+        self.assertEqual(session.json()['user']['username'], 'daru')
+
+    def test_logout(self):
+        User.objects.create_user(username='daru', password='super_haker_123')
+        self.client.login(username='daru', password='super_haker_123')
+
+        response = self.client.post('/api/auth/logout', **csrf_headers(self.client))
+
+        self.assertEqual(response.status_code, 204)
+        self.assertIsNone(self.client.get('/api/auth/session').json()['user'])
+
+
+class ProfileApiTest(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='okabe', password='elpsykongroo')
+        self.client.login(username='okabe', password='elpsykongroo')
+
+    def test_update_nickname(self):
+        response = self.client.patch(
+            '/api/profile',
+            {'nickname': 'Hououin Kyouma'},
+            content_type='application/json',
+            **csrf_headers(self.client),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['nickname'], 'Hououin Kyouma')
+        self.user.profile.refresh_from_db()
+        self.assertEqual(self.user.profile.nickname, 'Hououin Kyouma')
+
+    def test_anonymous_cannot_update_profile(self):
+        self.client.logout()
+
+        response = self.client.patch(
+            '/api/profile', {'nickname': 'x'}, content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 401)
