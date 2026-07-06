@@ -63,7 +63,7 @@ export function Header() {
         className="ml-auto transition-transform hover:scale-105"
       >
         <img
-          src="/img/register_bin.png"
+          src="/img/register_bin.webp"
           alt={user ? "Профиль" : "Регистрация"}
           className="h-12 w-auto transition duration-200 hover:scale-110 md:h-20"
         />
