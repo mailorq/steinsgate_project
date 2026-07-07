@@ -20,43 +20,63 @@ export function ProfilePage() {
   }
 
   return (
-    <div className="mx-auto mt-4 mb-6 max-w-[40rem] rounded-xl bg-zinc-800/80 p-4 shadow-lg md:mt-8 md:mb-12 md:p-10">
-      <h2 className="mb-6 text-center text-2xl font-bold md:mb-10 md:text-4xl">👤 Profile</h2>
+    <div className="mx-auto mt-10 mb-16 max-w-xl">
+      <p className="mb-4 px-1 font-mono text-xs tracking-[0.25em] text-amber-500/80 uppercase">
+        Lab Member
+      </p>
 
-      <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:gap-10">
-        <div className="flex-shrink-0">
+      <div className="overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-950/60 shadow-2xl shadow-black/40 backdrop-blur-sm">
+        <div className="flex items-center gap-5 p-6 md:gap-6 md:p-8">
           <Avatar
             avatarUrl={user.avatar_url}
             username={user.username}
-            sizeClass="w-32 h-32 md:w-56 md:h-56"
-            textSizeClass="text-3xl md:text-5xl"
+            sizeClass="w-24 h-24 md:w-28 md:h-28"
+            textSizeClass="text-3xl md:text-4xl"
+          />
+          <div className="min-w-0">
+            <h2 className="truncate text-2xl font-semibold tracking-tight md:text-3xl">
+              {user.nickname}
+            </h2>
+            <p className="mt-1 truncate text-base text-zinc-500">@{user.username}</p>
+            <p className="mt-2 truncate text-sm text-zinc-600">{user.email}</p>
+          </div>
+        </div>
+
+        <div className="border-t border-zinc-800/80">
+          <ProfileAction to="/profile/nickname" label="Изменить никнейм" hint={user.nickname} />
+          <ProfileAction
+            to="/profile/avatar"
+            label="Изменить аватар"
+            hint={user.avatar_url ? "загружен" : "не задан"}
           />
         </div>
 
-        <div className="flex w-full flex-col justify-center gap-3 text-base md:w-auto md:gap-4 md:text-lg">
-          <div>
-            <span className="text-sm text-zinc-400 md:text-base">Nickname:</span>
-            <p className="text-xl font-semibold break-words md:text-2xl">{user.nickname}</p>
-          </div>
-          <div>
-            <span className="text-sm text-zinc-400 md:text-base">Username:</span>
-            <p className="text-xl font-semibold break-words md:text-2xl">{user.username}</p>
-          </div>
-          <div>
-            <span className="text-sm text-zinc-400 md:text-base">Email:</span>
-            <p className="text-sm break-all text-zinc-300 md:text-base">{user.email}</p>
-          </div>
+        <div className="border-t border-zinc-800/80 p-3">
+          <Link
+            to="/logout"
+            className="flex items-center justify-center rounded-xl px-4 py-3 text-base font-medium text-red-400/90 transition-colors hover:bg-red-950/30 hover:text-red-300"
+          >
+            Выйти из аккаунта
+          </Link>
         </div>
       </div>
-
-      <div className="mt-6 md:mt-10">
-        <Link
-          to="/profile/settings"
-          className="block w-full rounded-xl bg-red-600 py-3 text-center text-base font-semibold text-white transition hover:bg-red-700 md:py-4 md:text-lg"
-        >
-          Settings
-        </Link>
-      </div>
     </div>
+  );
+}
+
+function ProfileAction({ to, label, hint }: { to: string; label: string; hint: string }) {
+  return (
+    <Link
+      to={to}
+      className="group flex items-center justify-between px-6 py-5 transition-colors hover:bg-zinc-900/60 md:px-8"
+    >
+      <span className="text-base text-zinc-200">{label}</span>
+      <span className="flex items-center gap-3">
+        <span className="max-w-[10rem] truncate text-sm text-zinc-600">{hint}</span>
+        <span className="text-zinc-600 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-amber-500">
+          →
+        </span>
+      </span>
+    </Link>
   );
 }

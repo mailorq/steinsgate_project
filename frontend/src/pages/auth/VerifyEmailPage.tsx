@@ -74,8 +74,8 @@ export function VerifyEmailPage() {
   }
 
   return (
-    <FormCard title="📩 Email Verification" maxWidthClass="max-w-[30rem]">
-      <p className="mb-6 text-center italic text-zinc-400">
+    <FormCard title="Email Verification" maxWidthClass="max-w-[30rem]">
+      <p className="mb-6 text-center text-sm leading-relaxed text-zinc-500">
         A D-Mail has been sent to your inbox. Enter the 6-digit code to prove you exist in this
         worldline.
       </p>
@@ -84,7 +84,7 @@ export function VerifyEmailPage() {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <div className="w-full">
-          <label className="mb-3 block text-center text-lg">Verification Code</label>
+          <label className="mb-3 block text-center text-xs font-medium tracking-widest text-zinc-400 uppercase">Verification Code</label>
           <div className="flex justify-center gap-3">
             {digits.map((digit, index) => (
               <input
@@ -101,7 +101,7 @@ export function VerifyEmailPage() {
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onPaste={handlePaste}
                 onFocus={(e) => e.target.select()}
-                className="h-14 w-12 rounded-lg bg-zinc-900/95 text-center text-2xl font-bold text-white caret-transparent focus:ring-2 focus:ring-yellow-400 focus:outline-none"
+                className="h-14 w-12 rounded-lg border border-zinc-800 bg-zinc-900/80 text-center text-2xl font-semibold text-amber-400 caret-transparent transition-colors focus:border-amber-500/70 focus:outline-none"
               />
             ))}
           </div>
@@ -110,14 +110,14 @@ export function VerifyEmailPage() {
         <button
           type="submit"
           disabled={!isComplete || isSubmitting}
-          className="w-full rounded-xl bg-lime-600 px-9 py-5 text-lg font-semibold text-white transition duration-300 hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
+          className="w-full rounded-lg bg-amber-500 px-5 py-3.5 text-sm font-semibold text-zinc-950 transition-all duration-200 hover:bg-amber-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
         >
           Verify
         </button>
       </form>
 
       <div className="mt-6 text-center">
-        <Link to="/register" className="text-lg text-yellow-400 hover:underline">
+        <Link to="/register" className="text-sm text-amber-400 transition-colors hover:text-amber-300">
           Back to Registration
         </Link>
       </div>

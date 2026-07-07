@@ -86,8 +86,8 @@ export function ChangeAvatarPage() {
   }
 
   return (
-    <FormCard title="Change Avatar" maxWidthClass="max-w-[30rem]">
-      <p className="mb-6 text-center italic text-zinc-400">
+    <FormCard title="Change Avatar" maxWidthClass="max-w-md">
+      <p className="mb-6 text-center text-sm leading-relaxed text-zinc-500">
         Update your Lab Member ID photo. Make it count.
       </p>
 
@@ -110,7 +110,7 @@ export function ChangeAvatarPage() {
             id="avatar"
             accept="image/*"
             onChange={handleFileChange}
-            className="w-full rounded-lg bg-zinc-900/95 px-5 py-4 text-white file:mr-4 file:cursor-pointer file:rounded-lg file:border-0 file:bg-zinc-700 file:px-4 file:py-2 file:font-semibold file:text-white hover:file:bg-zinc-600 focus:ring-2 focus:ring-yellow-400 focus:outline-none"
+            className="w-full rounded-lg border border-zinc-800 bg-zinc-900/80 px-4 py-3 text-sm text-zinc-300 transition-colors file:mr-4 file:cursor-pointer file:rounded-lg file:border-0 file:bg-zinc-800 file:px-4 file:py-2 file:text-sm file:font-medium file:text-zinc-200 hover:border-zinc-700 hover:file:bg-zinc-700 focus:border-amber-500/70 focus:outline-none"
           />
           {error && <div className="mt-1 text-sm text-red-500">{error}</div>}
         </div>
@@ -118,14 +118,14 @@ export function ChangeAvatarPage() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full rounded-xl bg-lime-600 px-9 py-5 text-lg font-semibold text-white transition duration-300 hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
+          className="w-full rounded-lg bg-amber-500 px-5 py-3.5 text-sm font-semibold text-zinc-950 transition-all duration-200 hover:bg-amber-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
         >
           Upload Avatar
         </button>
       </form>
 
       <div className="mt-6 text-center">
-        <Link to="/profile/settings" className="text-lg text-yellow-400 hover:underline">
+        <Link to="/profile" className="text-sm text-amber-400 transition-colors hover:text-amber-300">
           Back to Settings
         </Link>
       </div>

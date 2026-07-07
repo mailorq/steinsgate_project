@@ -18,6 +18,7 @@ backend/media/
 node_modules/
 dist/
 *.local
+.vite/
 
 # IDE
 .idea/

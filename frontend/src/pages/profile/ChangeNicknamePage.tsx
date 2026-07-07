@@ -57,8 +57,8 @@ function ChangeNicknameForm({ user }: { user: UserOut }) {
   }
 
   return (
-    <FormCard title="Change Nickname" maxWidthClass="max-w-[30rem]">
-      <p className="mb-6 text-center italic text-zinc-400">
+    <FormCard title="Change Nickname" maxWidthClass="max-w-md">
+      <p className="mb-6 text-center text-sm leading-relaxed text-zinc-500">
         Every Lab Member deserves a proper codename. Choose wisely.
       </p>
 
@@ -77,14 +77,14 @@ function ChangeNicknameForm({ user }: { user: UserOut }) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full rounded-xl bg-lime-600 px-9 py-5 text-lg font-semibold text-white transition duration-300 hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
+          className="w-full rounded-lg bg-amber-500 px-5 py-3.5 text-sm font-semibold text-zinc-950 transition-all duration-200 hover:bg-amber-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
         >
           Save Nickname
         </button>
       </form>
 
       <div className="mt-6 text-center">
-        <Link to="/profile/settings" className="text-lg text-yellow-400 hover:underline">
+        <Link to="/profile" className="text-sm text-amber-400 transition-colors hover:text-amber-300">
           Back to Settings
         </Link>
       </div>

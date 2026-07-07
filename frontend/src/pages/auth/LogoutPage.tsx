@@ -26,14 +26,14 @@ export function LogoutPage() {
   }
 
   return (
-    <FormCard title="🚪 Logout" maxWidthClass="max-w-[40rem]">
-      <p className="mb-8 text-center text-lg text-zinc-400">Are you sure you want to log out?</p>
+    <FormCard title="Logout" maxWidthClass="max-w-md">
+      <p className="mb-8 text-center text-sm text-zinc-500">Are you sure you want to log out?</p>
       <div className="text-center">
         <button
           type="button"
           onClick={handleLogout}
           disabled={isSubmitting}
-          className="rounded-xl bg-red-600 px-10 py-4 text-lg font-semibold text-white transition hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex items-center justify-center rounded-lg border border-red-900/60 bg-red-950/30 px-8 py-3 text-sm font-medium text-red-400 transition-all duration-200 hover:border-red-700 hover:bg-red-950/60 hover:text-red-300 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
         >
           Logout
         </button>

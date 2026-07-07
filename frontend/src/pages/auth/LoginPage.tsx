@@ -43,7 +43,7 @@ export function LoginPage() {
 
   return (
     <FormCard
-      title="🔓 Login"
+      title="Login"
       subtitle="The Reading Steiner seems to be malfunctioning… remind me… what was your name again?"
     >
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
@@ -51,7 +51,7 @@ export function LoginPage() {
 
         <TextField
           id="username"
-          label="👤 Login"
+          label="Login"
           type="text"
           placeholder="Enter login"
           value={username}
@@ -59,7 +59,7 @@ export function LoginPage() {
         />
         <TextField
           id="password"
-          label="🔑 Password"
+          label="Password"
           type="password"
           placeholder="Enter your password"
           value={password}
@@ -69,16 +69,16 @@ export function LoginPage() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full rounded-xl bg-lime-600 px-9 py-5 text-lg font-semibold text-white transition duration-300 hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
+          className="w-full rounded-lg bg-amber-500 px-5 py-3.5 text-sm font-semibold text-zinc-950 transition-all duration-200 hover:bg-amber-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
         >
           Sign in
         </button>
       </form>
 
       <div className="mt-8 text-center">
-        <p className="text-lg text-zinc-400">
+        <p className="text-sm text-zinc-500">
           Not a lab member yet?! Then here!{" "}
-          <Link to="/register" className="text-yellow-400 hover:underline">
+          <Link to="/register" className="text-amber-400 transition-colors hover:text-amber-300">
             Register
           </Link>
         </p>

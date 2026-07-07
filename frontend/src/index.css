@@ -7,9 +7,12 @@
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: url("/img/background.webp");
+  background-image:
+    linear-gradient(to bottom, rgba(9, 9, 11, 0.86), rgba(9, 9, 11, 0.94) 40%, rgba(9, 9, 11, 0.97)),
+    url("/img/background.webp");
   background-attachment: fixed;
   background-size: cover;
+  background-color: #09090b;
 }
 
 @media (max-width: 767px) {
@@ -18,40 +21,66 @@ body {
   }
 }
 
+/* --- Появление страницы при смене маршрута --- */
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: page-enter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter {
+    animation: none;
+  }
+}
+
 /* --- Divergence meter (nixie tubes) --- */
 
 .nixie-container {
   display: flex;
   align-items: center;
-  background: oklch(21% 0.006 285.885);
-  padding: 6px;
+  background: rgba(24, 24, 27, 0.9);
+  border: 1px solid rgba(255, 85, 0, 0.12);
+  border-radius: 8px;
+  padding: 4px 6px;
   width: fit-content;
   user-select: none;
 }
 
 .nixie-digit {
   font-family: "Courier New", monospace;
-  font-size: 1.4rem;
+  font-size: 1rem;
   font-weight: bold;
   color: #ff5500;
   text-shadow:
     0 0 3px rgba(255, 85, 0, 0.9),
-    0 0 6px rgba(255, 34, 0, 0.7);
-  width: 20px;
+    0 0 7px rgba(255, 34, 0, 0.6);
+  width: 15px;
   text-align: center;
   line-height: 1.2;
-  padding: 3px 0;
-  border: 1px solid rgba(255, 85, 0, 0.2);
+  padding: 2px 0;
+  border: 1px solid rgba(255, 85, 0, 0.18);
   border-radius: 3px;
   margin: 0 1px;
-  box-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
+  box-shadow: 0 0 5px rgba(255, 69, 0, 0.35) inset;
+  transition: opacity 0.12s ease;
 }
 
 .nixie-dot {
-  font-size: 1.4rem;
+  font-size: 1rem;
   color: #ff5500;
   margin: 0 2px;
-  padding-bottom: 5px;
+  padding-bottom: 4px;
 }
 
 .nixie-digit.flicker {
@@ -59,25 +88,13 @@ body {
 }
 
 @media (min-width: 768px) {
-  .nixie-container {
-    padding: 10px;
-  }
-
   .nixie-digit {
-    font-size: 2.2rem;
-    width: 30px;
-    padding: 5px 0;
-    border-radius: 5px;
-    margin: 0 2px;
-    text-shadow:
-      0 0 4px rgba(255, 85, 0, 0.9),
-      0 0 10px rgba(255, 34, 0, 0.7);
-    box-shadow: 0 0 8px rgba(255, 69, 0, 0.5);
+    font-size: 1.25rem;
+    width: 19px;
   }
 
   .nixie-dot {
-    font-size: 2.2rem;
-    margin: 0 5px;
-    padding-bottom: 8px;
+    font-size: 1.25rem;
+    margin: 0 3px;
   }
 }
