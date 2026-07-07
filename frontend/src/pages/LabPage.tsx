@@ -24,13 +24,13 @@ export function LabPage() {
 
   return (
     <>
-      <div className="mx-auto mt-4 mb-10 max-w-[80rem]">
-        <div className="rounded-xl bg-zinc-800/80 p-8">
-          <p className="mb-4 font-mono text-xs tracking-[0.2em] text-amber-400/70 uppercase">
+      <div className="mx-auto mt-2 mb-10 max-w-5xl">
+        <div className="rounded-2xl border border-zinc-800/80 bg-zinc-950/60 p-7 backdrop-blur-sm md:p-9">
+          <p className="mb-4 font-mono text-xs tracking-[0.25em] text-amber-500/80 uppercase">
             О проекте
           </p>
 
-          <h2 className="mb-4 text-2xl leading-snug font-semibold text-zinc-100">
+          <h2 className="mb-5 text-2xl leading-snug font-semibold tracking-tight text-zinc-100">
             Фан-платформа для просмотра Врат Штейна,
             <br />
             созданная как пет-проект
@@ -108,18 +108,18 @@ export function LabPage() {
         </div>
       </div>
 
-      <div className="mx-auto mt-10 mb-10 max-w-[80rem]">
-        <div className="rounded-xl bg-zinc-800/80 p-6 md:p-8">
-          <h3 className="mb-6 text-2xl font-bold text-zinc-100">Все серии</h3>
+      <div className="mx-auto mt-8 mb-10 max-w-5xl">
+        <div className="rounded-2xl border border-zinc-800/80 bg-zinc-950/60 p-6 backdrop-blur-sm md:p-8">
+          <h3 className="mb-6 text-xl font-semibold tracking-tight text-zinc-100">Все серии</h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             {ANIMES.map((anime) => (
               <Link
                 key={anime.slug}
                 to={`/${anime.slug}`}
-                className="block rounded-lg bg-zinc-900 p-4 transition hover:bg-zinc-800"
+                className="flex h-full flex-col rounded-xl border border-zinc-800/70 bg-zinc-900/50 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-500/40 hover:bg-zinc-900"
               >
-                <h4 className="mb-2 text-lg font-semibold text-zinc-200">{anime.name}</h4>
-                <div className="flex items-center justify-between text-sm">
+                <h4 className="mb-3 text-base font-semibold text-zinc-200">{anime.name}</h4>
+                <div className="mt-auto flex items-center justify-between pt-3 text-sm">
                   <span className="text-zinc-400">Мировая линия:</span>
                   <span className="font-mono text-amber-400">{anime.worldline}</span>
                 </div>

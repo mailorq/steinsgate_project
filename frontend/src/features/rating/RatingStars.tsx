@@ -86,7 +86,7 @@ export function RatingStars({ animeSlug }: RatingStarsProps) {
 function StarIcon({ filled, sizeClass }: { filled: boolean; sizeClass: string }) {
   return (
     <svg
-      className={`${sizeClass} ${filled ? "text-yellow-400" : "text-zinc-600"}`}
+      className={`${sizeClass} ${filled ? "text-amber-400" : "text-zinc-600"}`}
       fill="currentColor"
       viewBox="0 0 20 20"
     >
