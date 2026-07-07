@@ -24,7 +24,7 @@ def create_comment(*, user, anime, text: str) -> Comment:
         logger.warning(f"Spam attempt blocked: {user.username} tried to post a link.")
         raise CommentRejected("Ссылки в комментариях запрещены")
 
-    if not (MIN_LENGTH <= len(cleaned) < MAX_LENGTH):
+    if not (MIN_LENGTH <= len(cleaned) <= MAX_LENGTH):
         raise CommentRejected("Недопустимая длина комментария")
 
     comment = Comment.objects.create(user=user, anime=anime, text=cleaned)

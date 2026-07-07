@@ -12,10 +12,7 @@ venv/
 # Django
 db.sqlite3
 backend/logs/
-backend/media/*
-!backend/media/avatars/
-backend/media/avatars/*
-!backend/media/avatars/default.jpg
+backend/media/
 
 # Node / frontend
 node_modules/

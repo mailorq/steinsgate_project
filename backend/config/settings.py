@@ -170,6 +170,10 @@ DATABASES = {
 API_AUTH_THROTTLE = os.environ.get("API_AUTH_THROTTLE", "30/m")
 API_WRITE_THROTTLE = os.environ.get("API_WRITE_THROTTLE", "20/m")
 
+# За nginx клиентский IP приходит в X-Forwarded-For; без этого троттлинг
+# видит всех клиентов как один адрес прокси
+NINJA_NUM_PROXIES = int(os.environ.get("NINJA_NUM_PROXIES", "1"))
+
 if 'test' in sys.argv:
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
