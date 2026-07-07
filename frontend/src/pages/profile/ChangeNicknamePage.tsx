@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
+import { ApiError, profileApi } from "@/shared/api";
+import type { UserOut } from "@/shared/api";
 import { useSession } from "@/shared/session/SessionContext";
 import { FormCard } from "@/shared/ui/FormCard";
 import { TextField } from "@/shared/ui/TextField";
@@ -9,29 +11,49 @@ import { TextField } from "@/shared/ui/TextField";
 const MAX_NICKNAME_LENGTH = 50;
 
 export function ChangeNicknamePage() {
+  const { user, isLoading } = useSession();
+
+  if (isLoading) {
+    return null;
+  }
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  return <ChangeNicknameForm user={user} />;
+}
+
+function ChangeNicknameForm({ user }: { user: UserOut }) {
   const navigate = useNavigate();
-  const { user, updateUser } = useSession();
-  const [nickname, setNickname] = useState(user?.nickname ?? "");
+  const { setUser } = useSession();
+  const [nickname, setNickname] = useState(user.nickname);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     document.title = "Change Nickname";
   }, []);
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     const trimmed = nickname.trim();
     if (!trimmed || trimmed.length > MAX_NICKNAME_LENGTH) {
       setError(`Никнейм должен быть от 1 до ${MAX_NICKNAME_LENGTH} символов`);
       return;
     }
-    // TODO(api): PATCH /api/profile { nickname }
-    updateUser({ nickname: trimmed });
-    navigate("/profile");
+
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      const updated = await profileApi.updateNickname(trimmed);
+      setUser(updated);
+      navigate("/profile");
+    } catch (requestError) {
+      setError(
+        requestError instanceof ApiError ? requestError.message : "Не удалось выполнить запрос",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -54,7 +76,8 @@ export function ChangeNicknamePage() {
 
         <button
           type="submit"
-          className="w-full rounded-xl bg-lime-600 px-9 py-5 text-lg font-semibold text-white transition duration-300 hover:opacity-80"
+          disabled={isSubmitting}
+          className="w-full rounded-xl bg-lime-600 px-9 py-5 text-lg font-semibold text-white transition duration-300 hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
         >
           Save Nickname
         </button>

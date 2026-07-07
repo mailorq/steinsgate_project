@@ -8,11 +8,15 @@ const BUTTON_CLASS =
 
 export function SettingsPage() {
   const navigate = useNavigate();
-  const { user } = useSession();
+  const { user, isLoading } = useSession();
 
   useEffect(() => {
     document.title = "Settings";
   }, []);
+
+  if (isLoading) {
+    return null;
+  }
 
   if (!user) {
     return <Navigate to="/login" replace />;

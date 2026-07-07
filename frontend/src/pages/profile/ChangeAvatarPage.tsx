@@ -2,19 +2,21 @@ import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
+import { ApiError, profileApi } from "@/shared/api";
 import { useSession } from "@/shared/session/SessionContext";
 import { Avatar } from "@/shared/ui/Avatar";
 import { FormCard } from "@/shared/ui/FormCard";
 
 const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
-const MAX_AVATAR_SIZE = 8 * 1024 * 1024; // 8 MB, как на бэкенде
+const MAX_AVATAR_SIZE = 8 * 1024 * 1024;
 
 export function ChangeAvatarPage() {
   const navigate = useNavigate();
-  const { user, updateUser } = useSession();
+  const { user, isLoading, setUser } = useSession();
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const previewUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -25,6 +27,10 @@ export function ChangeAvatarPage() {
       }
     };
   }, []);
+
+  if (isLoading) {
+    return null;
+  }
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -57,15 +63,26 @@ export function ChangeAvatarPage() {
     setPreviewUrl(url);
   }
 
-  function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    if (!file || !previewUrl) {
+    if (!file) {
       setError("Выберите файл");
       return;
     }
-    // TODO(api): POST /api/profile/avatar (multipart), сохранить URL из ответа
-    updateUser({ avatarUrl: previewUrl });
-    navigate("/profile");
+
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      const updated = await profileApi.uploadAvatar(file);
+      setUser(updated);
+      navigate("/profile");
+    } catch (requestError) {
+      setError(
+        requestError instanceof ApiError ? requestError.message : "Не удалось выполнить запрос",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -76,7 +93,7 @@ export function ChangeAvatarPage() {
 
       <div className="mb-6 flex justify-center">
         <Avatar
-          avatarUrl={previewUrl ?? user.avatarUrl}
+          avatarUrl={previewUrl ?? user.avatar_url}
           username={user.username}
           sizeClass="w-32 h-32"
           textSizeClass="text-5xl"
@@ -100,7 +117,8 @@ export function ChangeAvatarPage() {
 
         <button
           type="submit"
-          className="w-full rounded-xl bg-lime-600 px-9 py-5 text-lg font-semibold text-white transition duration-300 hover:opacity-80"
+          disabled={isSubmitting}
+          className="w-full rounded-xl bg-lime-600 px-9 py-5 text-lg font-semibold text-white transition duration-300 hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
         >
           Upload Avatar
         </button>

@@ -1,25 +1,14 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { ApiError, commentsApi } from "@/shared/api";
+import type { CommentOut, CommentPageOut } from "@/shared/api";
 import { useSession } from "@/shared/session/SessionContext";
 import { Avatar } from "@/shared/ui/Avatar";
 
-const COMMENTS_PER_PAGE = 6;
 const COMMENTS_OPEN_KEY = "comments_open";
-
-export interface CommentData {
-  id: number;
-  author: {
-    username: string;
-    nickname: string;
-    avatarUrl: string | null;
-  };
-  text: string;
-  createdAt: Date;
-  likes: number;
-  dislikes: number;
-  myReaction: "like" | "dislike" | null;
-}
 
 interface CommentsSectionProps {
   animeSlug: string;
@@ -27,15 +16,63 @@ interface CommentsSectionProps {
 
 export function CommentsSection({ animeSlug }: CommentsSectionProps) {
   const { user } = useSession();
-  const [comments, setComments] = useState<CommentData[]>([]);
+  const queryClient = useQueryClient();
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
+  const [error, setError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(() => localStorage.getItem(COMMENTS_OPEN_KEY) === "1");
 
-  void animeSlug;
+  const queryKey = ["comments", animeSlug, page];
+  const { data } = useQuery({
+    queryKey,
+    queryFn: () => commentsApi.list(animeSlug, page),
+    placeholderData: (previous) => previous,
+  });
 
-  const totalPages = Math.max(1, Math.ceil(comments.length / COMMENTS_PER_PAGE));
-  const pageComments = comments.slice((page - 1) * COMMENTS_PER_PAGE, page * COMMENTS_PER_PAGE);
+  const createMutation = useMutation({
+    mutationFn: (commentText: string) => commentsApi.create(animeSlug, commentText),
+    onSuccess: () => {
+      setText("");
+      setError(null);
+      setPage(1);
+      queryClient.invalidateQueries({ queryKey: ["comments", animeSlug] });
+    },
+    onError: (requestError) => {
+      setError(
+        requestError instanceof ApiError ? requestError.message : "Не удалось отправить комментарий",
+      );
+    },
+  });
+
+  const reactMutation = useMutation({
+    mutationFn: ({ commentId, isLike }: { commentId: number; isLike: boolean }) =>
+      commentsApi.react(commentId, isLike),
+    onSuccess: (result, { commentId, isLike }) => {
+      queryClient.setQueryData<CommentPageOut>(queryKey, (old) => {
+        if (!old) {
+          return old;
+        }
+        return {
+          ...old,
+          items: old.items.map((comment) => {
+            if (comment.id !== commentId) {
+              return comment;
+            }
+            const reaction = isLike ? "like" : "dislike";
+            return {
+              ...comment,
+              likes: result.likes,
+              dislikes: result.dislikes,
+              my_reaction: comment.my_reaction === reaction ? null : reaction,
+            };
+          }),
+        };
+      });
+    },
+  });
+
+  const comments = data?.items ?? [];
+  const totalPages = data?.total_pages ?? 1;
 
   function toggleOpen() {
     setIsOpen((open) => {
@@ -47,43 +84,10 @@ export function CommentsSection({ animeSlug }: CommentsSectionProps) {
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
     const trimmed = text.trim();
-    if (!user || trimmed.length < 3 || trimmed.length >= 2000) {
+    if (!user || trimmed.length < 3 || trimmed.length > 2000) {
       return;
     }
-    const newComment: CommentData = {
-      id: Date.now(),
-      author: { username: user.username, nickname: user.nickname, avatarUrl: user.avatarUrl },
-      text: trimmed,
-      createdAt: new Date(),
-      likes: 0,
-      dislikes: 0,
-      myReaction: null,
-    };
-    setComments((current) => [newComment, ...current]);
-    setText("");
-    setPage(1);
-  }
-
-  function react(commentId: number, reaction: "like" | "dislike") {
-    setComments((current) =>
-      current.map((comment) => {
-        if (comment.id !== commentId) {
-          return comment;
-        }
-        const next = { ...comment };
-        if (next.myReaction === reaction) {
-          next.myReaction = null;
-          next[reaction === "like" ? "likes" : "dislikes"] -= 1;
-        } else {
-          if (next.myReaction) {
-            next[next.myReaction === "like" ? "likes" : "dislikes"] -= 1;
-          }
-          next.myReaction = reaction;
-          next[reaction === "like" ? "likes" : "dislikes"] += 1;
-        }
-        return next;
-      }),
-    );
+    createMutation.mutate(trimmed);
   }
 
   return (
@@ -117,9 +121,11 @@ export function CommentsSection({ animeSlug }: CommentsSectionProps) {
                     required
                     className="w-full resize-none rounded-lg bg-zinc-900 p-3 text-sm text-white focus:ring-2 focus:ring-red-500 focus:outline-none md:p-4 md:text-base"
                   />
+                  {error && <div className="mt-2 text-sm text-red-500">{error}</div>}
                   <button
                     type="submit"
-                    className="mt-3 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium transition hover:bg-red-700 md:mt-4 md:px-6 md:text-base"
+                    disabled={createMutation.isPending}
+                    className="mt-3 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40 md:mt-4 md:px-6 md:text-base"
                   >
                     Отправить
                   </button>
@@ -131,15 +137,15 @@ export function CommentsSection({ animeSlug }: CommentsSectionProps) {
               )}
 
               <div className="space-y-4 md:space-y-6">
-                {pageComments.length === 0 ? (
+                {comments.length === 0 ? (
                   <div className="text-center text-zinc-500">Пока нет комментариев</div>
                 ) : (
-                  pageComments.map((comment) => (
+                  comments.map((comment) => (
                     <CommentCard
                       key={comment.id}
                       comment={comment}
                       canReact={user !== null}
-                      onReact={react}
+                      onReact={(commentId, isLike) => reactMutation.mutate({ commentId, isLike })}
                     />
                   ))
                 )}
@@ -183,16 +189,16 @@ function CommentCard({
   canReact,
   onReact,
 }: {
-  comment: CommentData;
+  comment: CommentOut;
   canReact: boolean;
-  onReact: (commentId: number, reaction: "like" | "dislike") => void;
+  onReact: (commentId: number, isLike: boolean) => void;
 }) {
   return (
     <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 transition-colors hover:border-zinc-700 md:p-6">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <Avatar
-            avatarUrl={comment.author.avatarUrl}
+            avatarUrl={comment.author.avatar_url}
             username={comment.author.username}
             sizeClass="w-10 h-10 md:w-12 md:h-12"
             textSizeClass="text-base md:text-lg"
@@ -204,7 +210,7 @@ function CommentCard({
           </div>
         </div>
         <span className="flex-shrink-0 text-xs whitespace-nowrap text-zinc-500 md:text-sm">
-          {formatDate(comment.createdAt)}
+          {formatDate(new Date(comment.created_at))}
         </span>
       </div>
 
@@ -216,9 +222,9 @@ function CommentCard({
         <div className="mt-3 flex items-center gap-4">
           <button
             type="button"
-            onClick={() => onReact(comment.id, "like")}
+            onClick={() => onReact(comment.id, true)}
             className={`flex items-center gap-1 text-xs transition md:text-sm ${
-              comment.myReaction === "like" ? "text-green-400" : "text-zinc-400 hover:text-green-400"
+              comment.my_reaction === "like" ? "text-green-400" : "text-zinc-400 hover:text-green-400"
             }`}
           >
             <ThumbIcon up />
@@ -226,9 +232,9 @@ function CommentCard({
           </button>
           <button
             type="button"
-            onClick={() => onReact(comment.id, "dislike")}
+            onClick={() => onReact(comment.id, false)}
             className={`flex items-center gap-1 text-xs transition md:text-sm ${
-              comment.myReaction === "dislike" ? "text-red-400" : "text-zinc-400 hover:text-red-400"
+              comment.my_reaction === "dislike" ? "text-red-400" : "text-zinc-400 hover:text-red-400"
             }`}
           >
             <ThumbIcon />

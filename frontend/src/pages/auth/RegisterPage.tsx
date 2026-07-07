@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { ApiPendingNotice } from "@/shared/ui/ApiPendingNotice";
+import { ApiError, authApi } from "@/shared/api";
 import { FormCard } from "@/shared/ui/FormCard";
 import { TextField } from "@/shared/ui/TextField";
 
@@ -20,6 +20,8 @@ export function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<RegisterErrors>({});
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     document.title = "Registration";
@@ -42,15 +44,24 @@ export function RegisterPage() {
     return next;
   }
 
-  function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     const next = validate();
     setErrors(next);
     if (Object.keys(next).length > 0) {
       return;
     }
-    // TODO(api): POST /api/auth/register, затем переход на подтверждение почты
-    navigate("/verify-email");
+
+    setIsSubmitting(true);
+    setServerError(null);
+    try {
+      await authApi.register({ username: username.trim(), email, password });
+      navigate("/verify-email");
+    } catch (error) {
+      setServerError(error instanceof ApiError ? error.message : "Не удалось выполнить запрос");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -59,6 +70,8 @@ export function RegisterPage() {
       subtitle="The Future Gadget Laboratory needs you. Rise and become a Lab Member!"
     >
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
+        {serverError && <div className="text-center text-sm text-red-500">{serverError}</div>}
+
         <TextField
           id="username"
           label="👤 Login"
@@ -96,11 +109,10 @@ export function RegisterPage() {
           error={errors.confirmPassword}
         />
 
-        <ApiPendingNotice />
-
         <button
           type="submit"
-          className="w-full rounded-xl bg-lime-600 px-9 py-5 text-lg font-semibold text-white transition duration-300 hover:opacity-80"
+          disabled={isSubmitting}
+          className="w-full rounded-xl bg-lime-600 px-9 py-5 text-lg font-semibold text-white transition duration-300 hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
         >
           Register
         </button>

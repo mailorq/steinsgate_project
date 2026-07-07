@@ -1,21 +1,28 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { authApi } from "@/shared/api";
 import { useSession } from "@/shared/session/SessionContext";
 import { FormCard } from "@/shared/ui/FormCard";
 
 export function LogoutPage() {
   const navigate = useNavigate();
-  const { logout } = useSession();
+  const { setUser } = useSession();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     document.title = "Logout";
   }, []);
 
-  function handleLogout() {
-    // TODO(api): POST /api/auth/logout
-    logout();
-    navigate("/steins-gate");
+  async function handleLogout() {
+    setIsSubmitting(true);
+    try {
+      await authApi.logout();
+    } finally {
+      setUser(null);
+      setIsSubmitting(false);
+      navigate("/steins-gate");
+    }
   }
 
   return (
@@ -25,7 +32,8 @@ export function LogoutPage() {
         <button
           type="button"
           onClick={handleLogout}
-          className="rounded-xl bg-red-600 px-10 py-4 text-lg font-semibold text-white transition hover:opacity-80"
+          disabled={isSubmitting}
+          className="rounded-xl bg-red-600 px-10 py-4 text-lg font-semibold text-white transition hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
         >
           Logout
         </button>

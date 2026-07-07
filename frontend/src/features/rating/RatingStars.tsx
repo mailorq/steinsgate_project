@@ -1,5 +1,9 @@
 import { useState } from "react";
 
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { catalogApi } from "@/shared/api";
+import type { AnimeDetailOut } from "@/shared/api";
 import { useSession } from "@/shared/session/SessionContext";
 
 const STARS = [1, 2, 3, 4, 5];
@@ -8,15 +12,30 @@ interface RatingStarsProps {
   animeSlug: string;
 }
 
-/**
- TODO(api): оценка хранится локально. П
- */
 export function RatingStars({ animeSlug }: RatingStarsProps) {
   const { user } = useSession();
-  const [userRating, setUserRating] = useState<number | null>(null);
+  const queryClient = useQueryClient();
   const [hovered, setHovered] = useState<number | null>(null);
 
-  void animeSlug;
+  const { data } = useQuery({
+    queryKey: ["anime", animeSlug],
+    queryFn: () => catalogApi.detail(animeSlug),
+  });
+
+  const rateMutation = useMutation({
+    mutationFn: (rating: number) => catalogApi.rate(animeSlug, rating),
+    onSuccess: (result) => {
+      queryClient.setQueryData<AnimeDetailOut>(["anime", animeSlug], (old) =>
+        old
+          ? { ...old, avg_rating: result.avg_rating, user_rating: result.user_rating }
+          : old,
+      );
+    },
+  });
+
+  const avgRating = data?.avg_rating ?? null;
+  const userRating = data?.user_rating ?? null;
+  const totalViews = data?.total_views;
 
   return (
     <>
@@ -24,20 +43,20 @@ export function RatingStars({ animeSlug }: RatingStarsProps) {
         <div className="flex items-center gap-2">
           <span className="text-sm text-zinc-400">Рейтинг:</span>
           <div className="flex items-center gap-1">
-            {userRating === null ? (
+            {avgRating === null ? (
               <span className="text-zinc-500">Нет оценок</span>
             ) : (
               <>
                 {STARS.map((star) => (
-                  <StarIcon key={star} filled={star <= userRating} sizeClass="w-5 h-5" />
+                  <StarIcon key={star} filled={star <= Math.round(avgRating)} sizeClass="w-5 h-5" />
                 ))}
-                <span className="ml-2 text-zinc-300">{userRating.toFixed(1)}</span>
+                <span className="ml-2 text-zinc-300">{avgRating.toFixed(1)}</span>
               </>
             )}
           </div>
         </div>
         <div className="text-sm text-zinc-400">
-          Просмотров: <span className="text-zinc-300">—</span>
+          Просмотров: <span className="text-zinc-300">{totalViews ?? "—"}</span>
         </div>
       </div>
 
@@ -49,15 +68,12 @@ export function RatingStars({ animeSlug }: RatingStarsProps) {
               <button
                 key={star}
                 type="button"
-                onClick={() => setUserRating(star)}
+                onClick={() => rateMutation.mutate(star)}
                 onMouseEnter={() => setHovered(star)}
                 onMouseLeave={() => setHovered(null)}
                 className="transition hover:scale-110"
               >
-                <StarIcon
-                  filled={star <= (hovered ?? userRating ?? 0)}
-                  sizeClass="w-6 h-6"
-                />
+                <StarIcon filled={star <= (hovered ?? userRating ?? 0)} sizeClass="w-6 h-6" />
               </button>
             ))}
           </div>

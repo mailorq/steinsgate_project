@@ -4,13 +4,18 @@ import { Navigate, useParams } from "react-router-dom";
 import { CommentsSection } from "@/features/comments/CommentsSection";
 import { PlayerSwitcher } from "@/features/player/PlayerSwitcher";
 import { RatingStars } from "@/features/rating/RatingStars";
+import { WatchProgressBar } from "@/features/watch/WatchProgressBar";
+import { useWatchProgress } from "@/features/watch/useWatchProgress";
 import { findAnimeBySlug } from "@/shared/config/animes";
 import type { AnimeInfo } from "@/shared/config/animes";
+import { useSession } from "@/shared/session/SessionContext";
 import { Faq } from "@/shared/ui/Faq";
 
 export function AnimePage() {
   const { slug } = useParams();
+  const { user } = useSession();
   const anime = findAnimeBySlug(slug);
+  const { progress, resume } = useWatchProgress(anime?.slug ?? "", anime !== undefined && user !== null);
 
   useEffect(() => {
     if (anime) {
@@ -25,6 +30,7 @@ export function AnimePage() {
   return (
     <>
       <AnimeDescription anime={anime} />
+      <WatchProgressBar progress={progress} onResume={resume} />
       <PlayerSwitcher players={anime.players} />
       <Faq />
       <CommentsSection animeSlug={anime.slug} />

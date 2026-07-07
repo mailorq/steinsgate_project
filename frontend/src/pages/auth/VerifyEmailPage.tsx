@@ -1,14 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import type { ClipboardEvent, FormEvent, KeyboardEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import { ApiPendingNotice } from "@/shared/ui/ApiPendingNotice";
+import { ApiError, authApi } from "@/shared/api";
+import { useSession } from "@/shared/session/SessionContext";
 import { FormCard } from "@/shared/ui/FormCard";
 
 const CODE_LENGTH = 6;
 
 export function VerifyEmailPage() {
+  const navigate = useNavigate();
+  const { setUser } = useSession();
   const [digits, setDigits] = useState<string[]>(Array(CODE_LENGTH).fill(""));
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
   const code = digits.join("");
@@ -45,9 +50,27 @@ export function VerifyEmailPage() {
     inputsRef.current[Math.min(pasted.length, CODE_LENGTH - 1)]?.focus();
   }
 
-  function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    // TODO(api): POST /api/auth/verify-email с кодом, затем логин и переход на /steins-gate
+    if (!isComplete) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      const session = await authApi.verifyEmail(code);
+      setUser(session.user ?? null);
+      navigate("/steins-gate");
+    } catch (requestError) {
+      setError(
+        requestError instanceof ApiError ? requestError.message : "Не удалось выполнить запрос",
+      );
+      setDigits(Array(CODE_LENGTH).fill(""));
+      inputsRef.current[0]?.focus();
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -56,6 +79,8 @@ export function VerifyEmailPage() {
         A D-Mail has been sent to your inbox. Enter the 6-digit code to prove you exist in this
         worldline.
       </p>
+
+      {error && <div className="mb-4 text-center text-sm text-red-500">{error}</div>}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <div className="w-full">
@@ -82,11 +107,9 @@ export function VerifyEmailPage() {
           </div>
         </div>
 
-        <ApiPendingNotice />
-
         <button
           type="submit"
-          disabled={!isComplete}
+          disabled={!isComplete || isSubmitting}
           className="w-full rounded-xl bg-lime-600 px-9 py-5 text-lg font-semibold text-white transition duration-300 hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
         >
           Verify

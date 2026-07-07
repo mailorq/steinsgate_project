@@ -5,11 +5,15 @@ import { useSession } from "@/shared/session/SessionContext";
 import { Avatar } from "@/shared/ui/Avatar";
 
 export function ProfilePage() {
-  const { user } = useSession();
+  const { user, isLoading } = useSession();
 
   useEffect(() => {
     document.title = "Profile";
   }, []);
+
+  if (isLoading) {
+    return null;
+  }
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -22,7 +26,7 @@ export function ProfilePage() {
       <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:gap-10">
         <div className="flex-shrink-0">
           <Avatar
-            avatarUrl={user.avatarUrl}
+            avatarUrl={user.avatar_url}
             username={user.username}
             sizeClass="w-32 h-32 md:w-56 md:h-56"
             textSizeClass="text-3xl md:text-5xl"

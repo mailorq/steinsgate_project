@@ -47,7 +47,7 @@ export function PlayerSwitcher({ players }: PlayerSwitcherProps) {
               src={player.src}
               title={player.label}
               allowFullScreen
-              className="absolute top-0 left-0 h-full w-full"
+              className="player-embed absolute top-0 left-0 h-full w-full"
             />
           </div>
         </div>

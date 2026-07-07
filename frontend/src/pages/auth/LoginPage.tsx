@@ -1,28 +1,44 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import { ApiPendingNotice } from "@/shared/ui/ApiPendingNotice";
+import { ApiError, authApi } from "@/shared/api";
+import { useSession } from "@/shared/session/SessionContext";
 import { FormCard } from "@/shared/ui/FormCard";
 import { TextField } from "@/shared/ui/TextField";
 
 export function LoginPage() {
+  const navigate = useNavigate();
+  const { setUser } = useSession();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     document.title = "Login";
   }, []);
 
-  function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (!username.trim() || !password) {
       setError("Введите логин и пароль");
       return;
     }
+
+    setIsSubmitting(true);
     setError(null);
-    // TODO(api): POST /api/auth/login, обновить сессию и перейти на /steins-gate
+    try {
+      const session = await authApi.login({ username: username.trim(), password });
+      setUser(session.user ?? null);
+      navigate("/steins-gate");
+    } catch (requestError) {
+      setError(
+        requestError instanceof ApiError ? requestError.message : "Не удалось выполнить запрос",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -50,11 +66,10 @@ export function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <ApiPendingNotice />
-
         <button
           type="submit"
-          className="w-full rounded-xl bg-lime-600 px-9 py-5 text-lg font-semibold text-white transition duration-300 hover:opacity-80"
+          disabled={isSubmitting}
+          className="w-full rounded-xl bg-lime-600 px-9 py-5 text-lg font-semibold text-white transition duration-300 hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
         >
           Sign in
         </button>

@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import { Layout } from "@/app/Layout";
@@ -13,10 +14,20 @@ import { ProfilePage } from "@/pages/profile/ProfilePage";
 import { SettingsPage } from "@/pages/profile/SettingsPage";
 import { SessionProvider } from "@/shared/session/SessionContext";
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 export function App() {
   return (
-    <SessionProvider>
-      <BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <SessionProvider>
+        <BrowserRouter>
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Navigate to="/steins-gate" replace />} />
@@ -36,7 +47,8 @@ export function App() {
             <Route path="*" element={<Navigate to="/steins-gate" replace />} />
           </Route>
         </Routes>
-      </BrowserRouter>
-    </SessionProvider>
+        </BrowserRouter>
+      </SessionProvider>
+    </QueryClientProvider>
   );
 }
