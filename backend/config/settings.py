@@ -34,6 +34,15 @@ CSRF_COOKIE_HTTPONLY = False
 # CSRF
 CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "https://steins.stage-pet.site").split(",")
 
+# Vite dev-server проксирует /api с подменой Host, Origin браузера с ним не совпадает
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS += [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+    ]
+
 # Заголовки
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
