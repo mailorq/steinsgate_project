@@ -1,0 +1,44 @@
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+
+from accounts.tests import csrf_headers
+
+User = get_user_model()
+
+
+class WatchApiTest(TestCase):
+
+    URL = '/api/anime/steins-gate/progress'
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='okabe', password='elpsykongroo')
+
+    def test_anonymous_gets_401(self):
+        response = self.client.get(self.URL)
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_default_progress_is_zero(self):
+        self.client.login(username='okabe', password='elpsykongroo')
+
+        response = self.client.get(self.URL)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'current_time': 0.0, 'duration': 0.0, 'percentage': 0.0})
+
+    def test_save_and_read_progress(self):
+        self.client.login(username='okabe', password='elpsykongroo')
+        headers = csrf_headers(self.client)
+
+        response = self.client.put(
+            self.URL,
+            {'current_time': 600, 'duration': 1500},
+            content_type='application/json',
+            **headers,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['percentage'], 40.0)
+
+        saved = self.client.get(self.URL).json()
+        self.assertEqual(saved['current_time'], 600.0)

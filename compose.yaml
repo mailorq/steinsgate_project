@@ -1,0 +1,62 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_ENGINE: django.db.backends.postgresql
+      DB_HOST: db
+      DB_PORT: 5432
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py collectstatic --noinput &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+    volumes:
+      - django_static:/app/staticfiles
+      - django_media:/app/media
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - internal
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    ports:
+      - "4173:4173"
+    volumes:
+      - django_static:/srv/django-static:ro
+      - django_media:/srv/django-media:ro
+    depends_on:
+      - backend
+    networks:
+      - internal
+
+volumes:
+  postgres_data:
+  django_static:
+  django_media:
+
+networks:
+  internal:
+    driver: bridge
