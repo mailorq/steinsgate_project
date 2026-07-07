@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /profile/settings
+Disallow: /profile/avatar
+Disallow: /profile/nickname
+
+Sitemap: https://steins.stage-pet.site/sitemap.xml

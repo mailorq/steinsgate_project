@@ -1,240 +1,134 @@
-# 🎬 Steins;Gate Fan Platform
+# Steins;Gate Fan Platform
 
-A themed web application dedicated to **Steins;Gate**, where users can watch both seasons, create accounts, customize their profile, and interact through comments.
+A single-title streaming-style web application dedicated to Steins;Gate: watch both seasons and the movie, register an account, manage a profile, rate titles and discuss them in comments.
 
-This project was developed as a **final course project** to demonstrate full-stack development skills using Django.
+The project is a portfolio work demonstrating a production-shaped full-stack setup: an SPA frontend, a Django backend, and a containerized deployment behind nginx.
 
----
-
-## 🚀 About The Project
-
-Its is a niche streaming-style website focused on a single title - *Steins;Gate*.
-
-Unlike a real streaming service, this platform was built to showcase:
-
-* Backend architecture with Django
-* Authentication system with email confirmation
-* Media handling (avatars, files)
-* Dynamic UI with season switching
-* User interaction via comments
-
-The video player is implemented on the frontend side and works as an embedded media interface.
-
----
-
-## ✨ Features
-
-✅ Watch **Steins;Gate** (2 seasons)
-✅ Switch between seasons and episodes
-✅ User registration & login system
-✅ Email confirmation during signup
-✅ Profile customization:
-  * Change nickname (display name)
-  * Upload avatar
-✅ Minimal form and data validation
-✅ Comment system for registered users
-✅ Pagination for comments
-✅ Media file handling with Pillow
-✅ PostgreSQL support for production
-✅ Automated tests included
-✅ Environment configuration using `.env`
-✅ Fully functional Django backend
-
----
-
-## 🛠️ Tech Stack
-
-**Backend**
-
-* Django 6
-* Django Authentication System
-* SQLite / PostgreSQL
-* ASGI support
-
-**Frontend**
-
-* HTML5
-* CSS3
-* JavaScript (vanilla)
-
-**Libraries**
-
-* Pillow - image processing (avatars)
-* python-dotenv / dotenv - environment variables
-
----
-
-## 📦 Dependencies
+## Architecture
 
 ```
-asgiref==3.11.1
-Django==6.0.2
-dotenv==0.9.9
-pillow==12.1.0
-python-dotenv==1.2.1
-sqlparse==0.5.5
-tzdata==2025.3
-bleach
-psycopg2-binary
+browser
+   |
+   v
+nginx (frontend container, :4173)
+   |-- /            SPA static (React build)
+   |-- /assets/     hashed bundles, cached immutable
+   |-- /static/     Django admin static (shared volume)
+   |-- /media/      user uploads (shared volume)
+   |-- /api/   -----> backend (gunicorn, :8000)
+   |-- /admin/ -----> backend (gunicorn, :8000)
+                          |
+                          v
+                     PostgreSQL 16
 ```
 
----
+- `frontend/` — React SPA. All pages, routing and UI state live here. Served by nginx, which also proxies API and admin traffic to the backend.
+- `backend/` — Django project. Business logic, ORM models, admin. HTTP API layer is being migrated to django-ninja; until then legacy view code remains as the reference implementation.
+- `compose.yaml` — three services: `db` (PostgreSQL), `backend` (gunicorn), `frontend` (nginx).
 
-## ⚙️ Installation & Run Locally
+## Tech stack
 
-Clone the repository:
+| Layer      | Technology |
+|------------|------------|
+| Frontend   | React 19, TypeScript (strict), Vite, Tailwind CSS 4, React Router 7 |
+| Backend    | Python 3.14, Django 6, gunicorn |
+| Database   | PostgreSQL 16 (SQLite for local development) |
+| Infra      | Docker, docker compose, nginx |
 
-```
-git clone https://github.com/mailorq/SteinsGate_project.git
-cd SteinsGate_project
-```
-
-Create virtual environment:
-
-```
-python -m venv venv
-```
-
-Activate it:
-
-**Windows**
+## Repository layout
 
 ```
-venv\Scripts\activate
+.
+├── backend/
+│   ├── config/          # settings, urls, wsgi/asgi
+│   ├── mainpage/        # titles, comments, ratings, view history
+│   ├── users/           # auth, email verification, profiles
+│   ├── manage.py
+│   ├── requirements.txt
+│   └── Dockerfile
+├── frontend/
+│   ├── src/
+│   │   ├── app/         # router, layout
+│   │   ├── pages/       # route components
+│   │   ├── features/    # player, comments, rating
+│   │   └── shared/      # ui kit, config, session
+│   ├── nginx/           # nginx config used in the frontend image
+│   └── Dockerfile
+├── compose.yaml
+└── .env.example
 ```
 
-**Mac/Linux**
+## Getting started
+
+### Prerequisites
+
+- Docker with the compose plugin, or
+- Python 3.14+ and Node.js 22+ for local development.
+
+### Environment
+
+Copy `.env.example` to `.env` in the repository root and fill in the values. For local development without Docker, place the same file at `backend/.env`.
+
+| Variable              | Purpose |
+|-----------------------|---------|
+| `SECRET_KEY`          | Django secret key, required in production |
+| `DEBUG`               | `True`/`False`; security headers and cookies are DEBUG-aware |
+| `ALLOWED_HOSTS`       | Comma-separated host list |
+| `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT` | Database connection |
+| `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` | SMTP credentials for registration emails |
+
+### Run with Docker
 
 ```
-source venv/bin/activate
+docker compose up --build
 ```
 
-Install dependencies:
+The application is available at `http://localhost:4173`. Migrations and `collectstatic` run automatically on backend start.
+
+### Run locally (development)
+
+Backend:
 
 ```
+cd backend
+python -m venv .venv && .venv/Scripts/activate   # or source .venv/bin/activate
 pip install -r requirements.txt
-```
-
-Go to the core directory:
-
-```
-cd core
-```
-
-Create logs:
-
-```
-mkdir logs
-```
-
-Create file:
-
-```
-Create file "django.log" in new dir
-```
-
-Make migrations:
-
-```
-python manage.py makemigrations
-```
-
-Run migrations:
-
-```
 python manage.py migrate
-```
-
-Start the development server:
-
-```
 python manage.py runserver
 ```
 
-Open in browser:
+Frontend (separate terminal):
 
 ```
-http://127.0.0.1:8000/
+cd frontend
+npm install
+npm run dev
 ```
 
----
+Vite serves the SPA at `http://localhost:5173` and proxies `/api` and `/media` to `http://127.0.0.1:8000`.
 
-## 🔐 Authentication Flow
-
-1. User registers an account
-2. Confirmation email is sent
-3. After confirmation, user can:
-
-   * Log in
-   * Upload avatar
-   * Change nickname
-   * Leave comments
-
----
-## .env
-
-In main directory (SteinsGate_project) you need create .env and
-write here 
+## Testing
 
 ```
-SECRET_KEY=''
-DEBUG=''
-ALLOWED_HOSTS=''
-
-DB_NAME='your_db_name'
-DB_USER='your_db_user'
-DB_PASSWORD='your_db_password'
-DB_HOST='your_db_host'
-DB_PORT='your_db_port'
-
-EMAIL_HOST_USER='your_email'
-EMAIL_HOST_PASSWORD='your_app_password'
+cd backend
+python manage.py test
 ```
 
-After that project is ready to run
+Frontend type checking and production build:
 
----
+```
+cd frontend
+npm run build
+```
 
-## 🎯 Purpose of the Project
+## Status and roadmap
 
-This project was created to demonstrate:
+- [x] SPA frontend: all pages ported from Django templates (titles, lab page, auth, profile, comments, rating).
+- [x] Containerized deployment: nginx + gunicorn + PostgreSQL.
+- [ ] HTTP API on django-ninja (session auth, typed schemas, OpenAPI).
+- [ ] Frontend switched from local demo state to the API (comments, ratings, watch progress persistence).
+- [ ] Domain split of backend apps (accounts, catalog, comments, watch).
 
-* Full-stack development workflow
-* Working with Django authentication
-* Handling user-generated content
-* File uploads & media storage
-* Backend + frontend integration
-* Real-world application structure
+## Authors
 
-It is intended as a **portfolio project**, not a production streaming service.
-
----
-
-## 📌 Notes
-* The project is deployed and hosted online.
-* Designed for learning and demonstration purposes.
-* Focused on a single anime to emphasize functionality over scale.
-
----
-
-## 🧠 What This Project Demonstrates
-
-✔ Understanding of Django architecture<br>
-✔ Ability to build authentication flows<br>
-✔ Handling of media uploads<br>
-✔ Creating interactive UI with backend logic<br>
-✔ Managing database connections (PostgreSQL/SQLite)<br>
-✔ Testing backend functionality<br>
-✔ Managing environment configuration<br>
-✔ Structuring and deploying a real web application<br>
-
----
-
-## 👨‍💻 Author
-
-[mailor](https://github.com/mailorq) - frontend, backend <br><br>
-[oinqq](https://github.com/oniqq1) - backend 
-
----
-
-⭐ If you found this project interesting - feel free to explore and improve it!
+- [mailor](https://github.com/mailorq) — fullstack
