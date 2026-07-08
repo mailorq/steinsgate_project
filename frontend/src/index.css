@@ -59,13 +59,13 @@ body {
 
 .nixie-digit {
   font-family: "Courier New", monospace;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: bold;
   color: #ff5500;
   text-shadow:
     0 0 3px rgba(255, 85, 0, 0.9),
     0 0 7px rgba(255, 34, 0, 0.6);
-  width: 15px;
+  width: 13px;
   text-align: center;
   line-height: 1.2;
   padding: 2px 0;
