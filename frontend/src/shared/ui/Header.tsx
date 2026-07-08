@@ -36,7 +36,18 @@ export function Header() {
       const fullGap = screenCenter - fullMeasure.offsetWidth / 2 - buttonRect.right;
       const compactGap = screenCenter - compactMeasure.offsetWidth / 2 - buttonRect.right;
 
-      setTitleMode(fullGap > arrowPadding ? "full" : compactGap > arrowPadding ? "compact" : "hidden");
+      // Возврат к более длинной версии требует запаса больше любого скачка
+      // порога на CSS-брейкпоинтах, иначе на границе проскакивает лишний кадр
+      const hysteresis = 40;
+      setTitleMode((previous) => {
+        if (fullGap > arrowPadding + (previous === "full" ? 0 : hysteresis)) {
+          return "full";
+        }
+        if (compactGap > arrowPadding + (previous === "hidden" ? hysteresis : 0)) {
+          return "compact";
+        }
+        return "hidden";
+      });
     }
 
     measure();
