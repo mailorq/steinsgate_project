@@ -91,23 +91,23 @@ export function CommentsSection({ animeSlug }: CommentsSectionProps) {
   }
 
   return (
-    <div className="mx-auto mt-12 mb-16 max-w-[80rem] px-3 md:mt-24 md:mb-32 md:px-6">
-      <div className="rounded-xl bg-zinc-800/80 p-4 md:p-8">
+    <div className="mx-auto mt-10 mb-16 max-w-4xl px-3 md:mt-14 md:mb-24 md:px-0">
+      <div className="rounded-2xl border border-zinc-800/80 bg-zinc-950/60 p-5 backdrop-blur-sm md:p-7">
         <button
           type="button"
           onClick={toggleOpen}
-          className="flex w-full items-center justify-between text-left text-xl font-bold md:text-3xl"
+          className="flex w-full items-center justify-between text-left text-lg font-semibold tracking-tight md:text-xl"
         >
           <span>Комментарии</span>
           <span
-            className={`text-lg text-red-500 transition-transform duration-300 md:text-2xl ${isOpen ? "rotate-180" : ""}`}
+            className={`text-base text-amber-500 transition-transform duration-300 md:text-lg ${isOpen ? "rotate-180" : ""}`}
           >
             ˅
           </span>
         </button>
 
         <div
-          className={`grid transition-all duration-500 ease-in-out ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+          className={`grid transition-all duration-300 ease-out ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
         >
           <div className="overflow-hidden">
             <div className="mt-4 md:mt-6">
@@ -119,19 +119,19 @@ export function CommentsSection({ animeSlug }: CommentsSectionProps) {
                     rows={3}
                     placeholder="Написать комментарий..."
                     required
-                    className="w-full resize-none rounded-lg bg-zinc-900 p-3 text-sm text-white focus:ring-2 focus:ring-red-500 focus:outline-none md:p-4 md:text-base"
+                    className="w-full resize-none rounded-lg border border-zinc-800 bg-zinc-900/80 p-3 text-sm text-zinc-100 placeholder-zinc-600 transition-colors hover:border-zinc-700 focus:border-amber-500/70 focus:outline-none md:p-4"
                   />
                   {error && <div className="mt-2 text-sm text-red-500">{error}</div>}
                   <button
                     type="submit"
                     disabled={createMutation.isPending}
-                    className="mt-3 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40 md:mt-4 md:px-6 md:text-base"
+                    className="mt-3 inline-flex items-center justify-center rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition-all duration-200 hover:bg-amber-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 md:mt-4"
                   >
                     Отправить
                   </button>
                 </form>
               ) : (
-                <div className="mb-6 rounded-lg bg-zinc-900 p-3 text-center text-sm text-zinc-400 md:mb-8 md:p-4 md:text-base">
+                <div className="mb-6 rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center text-sm text-zinc-500 md:mb-8">
                   Чтобы оставить комментарий войдите в аккаунт
                 </div>
               )}
@@ -161,7 +161,7 @@ export function CommentsSection({ animeSlug }: CommentsSectionProps) {
             <button
               type="button"
               onClick={() => setPage(page - 1)}
-              className="rounded-lg bg-zinc-700 px-3 py-2 text-sm transition hover:bg-zinc-600 md:px-4 md:text-base"
+              className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100"
             >
               ← Назад
             </button>
@@ -173,7 +173,7 @@ export function CommentsSection({ animeSlug }: CommentsSectionProps) {
             <button
               type="button"
               onClick={() => setPage(page + 1)}
-              className="rounded-lg bg-zinc-700 px-3 py-2 text-sm transition hover:bg-zinc-600 md:px-4 md:text-base"
+              className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100"
             >
               Далее →
             </button>
@@ -194,7 +194,7 @@ function CommentCard({
   onReact: (commentId: number, isLike: boolean) => void;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 transition-colors hover:border-zinc-700 md:p-6">
+    <div className="rounded-xl border border-zinc-800/70 bg-zinc-900/50 p-4 transition-all duration-200 hover:border-zinc-700 hover:bg-zinc-900/80 md:p-5">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <Avatar
@@ -204,7 +204,7 @@ function CommentCard({
             textSizeClass="text-base md:text-lg"
           />
           <div className="min-w-0 flex-1">
-            <div className="truncate text-base font-bold text-red-500 md:text-lg">
+            <div className="truncate text-sm font-semibold text-amber-400/90 md:text-base">
               {comment.author.nickname || comment.author.username}
             </div>
           </div>
@@ -224,7 +224,7 @@ function CommentCard({
             type="button"
             onClick={() => onReact(comment.id, true)}
             className={`flex items-center gap-1 text-xs transition md:text-sm ${
-              comment.my_reaction === "like" ? "text-green-400" : "text-zinc-400 hover:text-green-400"
+              comment.my_reaction === "like" ? "text-emerald-400" : "text-zinc-500 hover:text-emerald-400"
             }`}
           >
             <ThumbIcon up />
@@ -234,7 +234,7 @@ function CommentCard({
             type="button"
             onClick={() => onReact(comment.id, false)}
             className={`flex items-center gap-1 text-xs transition md:text-sm ${
-              comment.my_reaction === "dislike" ? "text-red-400" : "text-zinc-400 hover:text-red-400"
+              comment.my_reaction === "dislike" ? "text-red-400" : "text-zinc-500 hover:text-red-400"
             }`}
           >
             <ThumbIcon />

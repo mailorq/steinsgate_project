@@ -11,14 +11,14 @@ export function Avatar({ avatarUrl, username, sizeClass, textSizeClass = "text-3
       <img
         src={avatarUrl}
         alt={`Аватар ${username}`}
-        className={`${sizeClass} rounded-full object-cover ring-2 ring-yellow-400`}
+        className={`${sizeClass} rounded-full object-cover ring-1 ring-zinc-700`}
       />
     );
   }
 
   return (
     <div
-      className={`${sizeClass} ${textSizeClass} flex items-center justify-center rounded-full bg-zinc-900 font-bold ring-2 ring-zinc-600`}
+      className={`${sizeClass} ${textSizeClass} flex items-center justify-center rounded-full bg-gradient-to-br from-zinc-800 to-zinc-900 font-semibold text-amber-500/90 ring-1 ring-zinc-700`}
     >
       {username.charAt(0).toUpperCase()}
     </div>

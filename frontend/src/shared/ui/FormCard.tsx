@@ -7,17 +7,14 @@ interface FormCardProps {
   children: ReactNode;
 }
 
-export function FormCard({
-  title,
-  subtitle,
-  maxWidthClass = "max-w-[50rem]",
-  children,
-}: FormCardProps) {
+export function FormCard({ title, subtitle, maxWidthClass = "max-w-md", children }: FormCardProps) {
   return (
-    <div className={`${maxWidthClass} mx-auto mt-8 mb-12 rounded-xl bg-zinc-800/80 p-8 shadow-lg`}>
-      <h2 className="mb-6 text-center text-3xl font-bold md:text-4xl">{title}</h2>
-      {subtitle && <h3 className="mb-3 text-center text-xl italic text-zinc-300 md:text-2xl">{subtitle}</h3>}
-      {children}
+    <div
+      className={`${maxWidthClass} mx-auto mt-10 mb-16 rounded-2xl border border-zinc-800/80 bg-zinc-950/60 p-8 shadow-2xl shadow-black/40 backdrop-blur-sm md:p-10`}
+    >
+      <h2 className="text-center text-2xl font-semibold tracking-tight text-zinc-100">{title}</h2>
+      {subtitle && <p className="mt-3 text-center text-sm leading-relaxed text-zinc-500">{subtitle}</p>}
+      <div className="mt-8">{children}</div>
     </div>
   );
 }

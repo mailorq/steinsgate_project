@@ -30,8 +30,8 @@ export function AnimePage() {
   return (
     <>
       <AnimeDescription anime={anime} />
-      <WatchProgressBar progress={progress} onResume={resume} />
       <PlayerSwitcher players={anime.players} />
+      <WatchProgressBar progress={progress} onResume={resume} />
       <Faq />
       <CommentsSection animeSlug={anime.slug} />
     </>
@@ -40,41 +40,41 @@ export function AnimePage() {
 
 function AnimeDescription({ anime }: { anime: AnimeInfo }) {
   return (
-    <div className="mx-auto mt-4 mb-12 max-w-[80rem] px-3 md:mb-24 md:px-6">
-      <div className="flex flex-col gap-4 rounded-xl bg-zinc-800/80 p-4 md:flex-row md:gap-6 md:p-6">
-        <div className="flex aspect-[2/3] w-full flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-zinc-700 md:w-[450px]">
-          <img src={anime.poster} alt={anime.name} className="h-full w-full object-contain" />
+    <div className="mx-auto mt-2 mb-10 max-w-5xl md:mb-14">
+      <div className="flex flex-col gap-6 rounded-2xl border border-zinc-800/80 bg-zinc-950/60 p-5 backdrop-blur-sm md:flex-row md:gap-8 md:p-7">
+        <div className="mx-auto w-56 flex-shrink-0 md:mx-0 md:w-72 md:self-center">
+          <img
+            src={anime.poster}
+            alt={anime.name}
+            className="w-full rounded-xl shadow-2xl shadow-black/50 ring-1 ring-zinc-800"
+          />
         </div>
 
-        <div className="flex flex-col overflow-hidden">
-          <h2 className="mt-1 text-2xl font-bold md:text-4xl">{anime.name}</h2>
-          <Divider />
+        <div className="flex min-w-0 flex-col">
+          <p className="font-mono text-xs tracking-[0.25em] text-amber-500/80 uppercase">
+            Worldline {anime.worldline}
+          </p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight md:text-3xl">{anime.name}</h2>
 
-          <div className="space-y-1 text-sm md:text-base">
-            <div>
-              <b>Сезон:</b> {anime.season}
-            </div>
-            <div>
-              <b>Тип:</b> {anime.type}
-            </div>
-            <div>
-              <b>Жанры:</b> {anime.genres}
-            </div>
+          <div className="mt-4 flex flex-wrap gap-x-6 gap-y-1.5 text-sm text-zinc-400">
+            <span>
+              <span className="text-zinc-600">Сезон·</span> {anime.season}
+            </span>
+            <span>
+              <span className="text-zinc-600">Тип·</span> {anime.type}
+            </span>
           </div>
-          <Divider />
+          <p className="mt-1.5 text-sm text-zinc-500">{anime.genres}</p>
+
+          <div className="my-5 h-px w-full bg-zinc-800" />
 
           <RatingStars animeSlug={anime.slug} />
-          <Divider />
 
-          <p className="line-clamp-[8] overflow-hidden text-sm leading-relaxed text-zinc-300 md:line-clamp-[10] md:text-lg">
-            {anime.description}
-          </p>
+          <div className="my-5 h-px w-full bg-zinc-800" />
+
+          <p className="text-sm leading-relaxed text-zinc-300 md:text-[15px]">{anime.description}</p>
         </div>
       </div>
     </div>
   );
-}
-
-function Divider() {
-  return <div className="my-3 h-px w-full bg-zinc-600/60 md:my-6" />;
 }

@@ -66,7 +66,7 @@ export function RegisterPage() {
 
   return (
     <FormCard
-      title="🚪 Registration"
+      title="Registration"
       subtitle="The Future Gadget Laboratory needs you. Rise and become a Lab Member!"
     >
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
@@ -74,7 +74,7 @@ export function RegisterPage() {
 
         <TextField
           id="username"
-          label="👤 Login"
+          label="Login"
           type="text"
           placeholder="Enter login"
           value={username}
@@ -83,7 +83,7 @@ export function RegisterPage() {
         />
         <TextField
           id="email"
-          label="📧 Email"
+          label="Email"
           type="email"
           placeholder="Enter email"
           value={email}
@@ -92,7 +92,7 @@ export function RegisterPage() {
         />
         <TextField
           id="password"
-          label="🔑 Password"
+          label="Password"
           type="password"
           placeholder="Enter your password"
           value={password}
@@ -101,7 +101,7 @@ export function RegisterPage() {
         />
         <TextField
           id="confirm-password"
-          label="🔑 Confirm Password"
+          label="Confirm Password"
           type="password"
           placeholder="Repeat the password"
           value={confirmPassword}
@@ -112,16 +112,16 @@ export function RegisterPage() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full rounded-xl bg-lime-600 px-9 py-5 text-lg font-semibold text-white transition duration-300 hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
+          className="w-full rounded-lg bg-amber-500 px-5 py-3.5 text-sm font-semibold text-zinc-950 transition-all duration-200 hover:bg-amber-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
         >
           Register
         </button>
       </form>
 
       <div className="mt-8 text-center">
-        <p className="text-lg text-zinc-400">
+        <p className="text-sm text-zinc-500">
           What? You’re already a Lab Member? Then step this way!{" "}
-          <Link to="/login" className="text-yellow-400 hover:underline">
+          <Link to="/login" className="text-amber-400 transition-colors hover:text-amber-300">
             Sign in
           </Link>
         </p>
