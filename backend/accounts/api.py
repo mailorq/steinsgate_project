@@ -6,13 +6,26 @@ from ninja import File, Router
 from ninja.decorators import decorate_view
 from ninja.files import UploadedFile
 from ninja.security import django_auth
-from ninja.throttling import AnonRateThrottle, AuthRateThrottle
 
-from . import services
-from .schemas import LoginIn, MessageOut, NicknameIn, RegisterIn, SessionOut, UserOut, VerifyEmailIn
+from config.network import get_client_ip
+from config.throttling import anon_throttles, auth_throttles
+
+from . import lockout, services
+from .schemas import (
+    LoginIn,
+    MessageOut,
+    NicknameIn,
+    RegisterIn,
+    SessionOut,
+    UserOut,
+    VerifyEmailIn,
+)
 
 auth_router = Router(tags=["auth"])
 profile_router = Router(tags=["profile"])
+
+AUTH_THROTTLES = anon_throttles(settings.API_AUTH_THROTTLE, settings.API_AUTH_THROTTLE_SUSTAINED)
+WRITE_THROTTLES = auth_throttles(settings.API_WRITE_THROTTLE, settings.API_WRITE_THROTTLE_SUSTAINED)
 
 
 def serialize_user(user: User) -> dict:
@@ -23,6 +36,10 @@ def serialize_user(user: User) -> dict:
         "email": user.email,
         "avatar_url": profile.avatar.url if profile.avatar else None,
     }
+
+
+def locked_response(error: lockout.LockedOut) -> tuple:
+    return 429, {"detail": str(error)}
 
 
 @auth_router.get("/csrf", response={204: None})
@@ -41,7 +58,7 @@ def session(request):
 @auth_router.post(
     "/register",
     response={201: MessageOut, 400: MessageOut},
-    throttle=[AnonRateThrottle(settings.API_AUTH_THROTTLE)],
+    throttle=AUTH_THROTTLES,
 )
 def register(request, payload: RegisterIn):
     try:
@@ -59,10 +76,16 @@ def register(request, payload: RegisterIn):
 
 @auth_router.post(
     "/verify-email",
-    response={200: SessionOut, 400: MessageOut},
-    throttle=[AnonRateThrottle(settings.API_AUTH_THROTTLE)],
+    response={200: SessionOut, 400: MessageOut, 429: MessageOut},
+    throttle=AUTH_THROTTLES,
 )
 def verify_email(request, payload: VerifyEmailIn):
+    ip = get_client_ip(request)
+    try:
+        lockout.check_blocked("verify", ip)
+    except lockout.LockedOut as error:
+        return locked_response(error)
+
     pending_user_id = request.session.get("pending_user_id")
     user = User.objects.filter(id=pending_user_id, is_active=False).first()
     if user is None:
@@ -71,8 +94,10 @@ def verify_email(request, payload: VerifyEmailIn):
     try:
         services.verify_email(user=user, code=payload.code)
     except services.VerificationError as error:
+        lockout.register_failure("verify", ip)
         return 400, {"detail": str(error)}
 
+    lockout.reset("verify", ip)
     request.session.pop("pending_user_id", None)
     login(request, user)
     return 200, {"user": serialize_user(user)}
@@ -80,16 +105,24 @@ def verify_email(request, payload: VerifyEmailIn):
 
 @auth_router.post(
     "/login",
-    response={200: SessionOut, 400: MessageOut},
-    throttle=[AnonRateThrottle(settings.API_AUTH_THROTTLE)],
+    response={200: SessionOut, 400: MessageOut, 429: MessageOut},
+    throttle=AUTH_THROTTLES,
 )
 def login_view(request, payload: LoginIn):
+    ip = get_client_ip(request)
+    try:
+        lockout.check_blocked("login", ip)
+    except lockout.LockedOut as error:
+        return locked_response(error)
+
     user = services.authenticate_user(
         request=request, username=payload.username, password=payload.password
     )
     if user is None:
+        lockout.register_failure("login", ip)
         return 400, {"detail": "Неверное имя пользователя или пароль"}
 
+    lockout.reset("login", ip)
     login(request, user)
     return 200, {"user": serialize_user(user)}
 
@@ -100,7 +133,12 @@ def logout_view(request):
     return 204, None
 
 
-@profile_router.patch("", response={200: UserOut, 400: MessageOut}, auth=django_auth)
+@profile_router.patch(
+    "",
+    response={200: UserOut, 400: MessageOut},
+    auth=django_auth,
+    throttle=WRITE_THROTTLES,
+)
 def update_profile(request, payload: NicknameIn):
     try:
         services.update_nickname(user=request.user, nickname=payload.nickname)
@@ -113,7 +151,7 @@ def update_profile(request, payload: NicknameIn):
     "/avatar",
     response={200: UserOut, 400: MessageOut},
     auth=django_auth,
-    throttle=[AuthRateThrottle(settings.API_WRITE_THROTTLE)],
+    throttle=WRITE_THROTTLES,
 )
 def upload_avatar(request, avatar: File[UploadedFile]):
     try:
