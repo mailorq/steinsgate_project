@@ -2,10 +2,11 @@ from datetime import timedelta
 
 from django.contrib.auth import get_user_model
 from django.core import mail
+from django.core.cache import cache
 from django.test import TestCase
 from django.utils import timezone
 
-from . import services
+from . import lockout, services
 from .models import EmailVerificationCode
 
 User = get_user_model()
@@ -99,7 +100,89 @@ class VerificationServiceTest(TestCase):
         self.assertFalse(logged_in)
 
 
+class LockoutTest(TestCase):
+
+    def setUp(self):
+        cache.clear()
+        User.objects.create_user(username='okabe', password='correct_horse_1')
+
+    def login(self, password):
+        return self.client.post(
+            '/api/auth/login',
+            {'username': 'okabe', 'password': password},
+            content_type='application/json',
+        )
+
+    def test_soft_block_after_five_failures(self):
+        for _ in range(5):
+            self.assertEqual(self.login('wrong').status_code, 400)
+
+        blocked = self.login('wrong')
+        self.assertEqual(blocked.status_code, 429)
+        self.assertIn('Повторите через', blocked.json()['detail'])
+
+        also_blocked_with_correct = self.login('correct_horse_1')
+        self.assertEqual(also_blocked_with_correct.status_code, 429)
+
+    def test_success_resets_counter(self):
+        for _ in range(4):
+            self.login('wrong')
+
+        self.assertEqual(self.login('correct_horse_1').status_code, 200)
+
+        for _ in range(5):
+            self.assertEqual(self.login('wrong').status_code, 400)
+
+    def test_hard_block_after_twenty_failures(self):
+        for _ in range(lockout.HARD_LIMIT):
+            lockout.register_failure('login', '1.2.3.4')
+
+        with self.assertRaises(lockout.LockedOut) as caught:
+            lockout.check_blocked('login', '1.2.3.4')
+
+        self.assertGreater(caught.exception.retry_after, lockout.SOFT_BLOCK_SECONDS)
+
+    def test_five_fresh_attempts_after_block_expires(self):
+        for _ in range(5):
+            lockout.register_failure('login', '5.6.7.8')
+
+        with self.assertRaises(lockout.LockedOut):
+            lockout.check_blocked('login', '5.6.7.8')
+
+        cache.delete('lockout:login:5.6.7.8:block')
+
+        for _ in range(4):
+            lockout.register_failure('login', '5.6.7.8')
+        lockout.check_blocked('login', '5.6.7.8')
+
+        lockout.register_failure('login', '5.6.7.8')
+        with self.assertRaises(lockout.LockedOut):
+            lockout.check_blocked('login', '5.6.7.8')
+
+    def test_verify_email_lockout(self):
+        response = self.client.post(
+            '/api/auth/register',
+            {'username': 'kurisu', 'email': 'kurisu@gmail.com', 'password': 'complex_pass_123'},
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 201)
+
+        for _ in range(5):
+            wrong = self.client.post(
+                '/api/auth/verify-email', {'code': '000000'}, content_type='application/json'
+            )
+            self.assertEqual(wrong.status_code, 400)
+
+        blocked = self.client.post(
+            '/api/auth/verify-email', {'code': '000000'}, content_type='application/json'
+        )
+        self.assertEqual(blocked.status_code, 429)
+
+
 class AuthApiTest(TestCase):
+
+    def setUp(self):
+        cache.clear()
 
     REGISTER_PAYLOAD = {
         'username': 'kurisu',

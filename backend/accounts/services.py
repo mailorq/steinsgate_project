@@ -51,6 +51,26 @@ def _send_code_email(email: str, code: str) -> None:
     )
 
 
+def _consume_code(record, code: str, not_found_message: str) -> None:
+    if record is None:
+        raise VerificationError(not_found_message)
+
+    if record.is_expired:
+        raise VerificationError("Код истек. Запросите новый.")
+
+    if record.attempts >= record.MAX_ATTEMPTS:
+        raise VerificationError("Попытки исчерпаны. Запросите новый код.")
+
+    record.attempts += 1
+    record.save(update_fields=["attempts"])
+
+    if not secrets.compare_digest(record.code, code):
+        remaining = record.MAX_ATTEMPTS - record.attempts
+        raise VerificationError(f"Неверный код. Осталось попыток: {remaining}")
+
+    record.delete()
+
+
 def _validate_registration(*, username: str, email: str, password: str) -> None:
     try:
         UnicodeUsernameValidator()(username)
@@ -88,27 +108,11 @@ def register_user(*, username: str, email: str, password: str) -> User:
 
 
 def verify_email(*, user: User, code: str) -> User:
-    try:
-        record = user.verification_code
-    except EmailVerificationCode.DoesNotExist:
-        raise VerificationError("Код не найден. Пройдите регистрацию заново.") from None
-
-    if record.is_expired:
-        raise VerificationError("Код истек. Пройдите регистрацию заново.")
-
-    if record.attempts >= EmailVerificationCode.MAX_ATTEMPTS:
-        raise VerificationError("Попытки исчерпаны. Пройдите регистрацию заново.")
-
-    record.attempts += 1
-    record.save(update_fields=["attempts"])
-
-    if not secrets.compare_digest(record.code, code):
-        remaining = EmailVerificationCode.MAX_ATTEMPTS - record.attempts
-        raise VerificationError(f"Неверный код. Осталось попыток: {remaining}")
+    record = EmailVerificationCode.objects.filter(user=user).first()
+    _consume_code(record, code, "Код не найден. Пройдите регистрацию заново.")
 
     user.is_active = True
     user.save(update_fields=["is_active"])
-    record.delete()
     return user
 
 

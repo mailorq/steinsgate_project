@@ -3,16 +3,18 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from ninja import Router
 from ninja.security import django_auth
-from ninja.throttling import AuthRateThrottle
 
 from accounts.schemas import MessageOut
 from catalog.models import AnimeDescription
+from config.throttling import auth_throttles
 
 from . import services
 from .models import Comment, CommentLike
 from .schemas import CommentIn, CommentOut, CommentPageOut, ReactionIn, ReactionOut
 
 router = Router(tags=["comments"])
+
+WRITE_THROTTLES = auth_throttles(settings.API_WRITE_THROTTLE, settings.API_WRITE_THROTTLE_SUSTAINED)
 
 COMMENTS_PER_PAGE = 6
 
@@ -66,7 +68,7 @@ def list_comments(request, slug: str, page: int = 1):
     "/anime/{slug}/comments",
     response={201: CommentOut, 400: MessageOut},
     auth=django_auth,
-    throttle=[AuthRateThrottle(settings.API_WRITE_THROTTLE)],
+    throttle=WRITE_THROTTLES,
 )
 def create_comment(request, slug: str, payload: CommentIn):
     anime = get_object_or_404(AnimeDescription, slug=slug)
@@ -85,7 +87,7 @@ def create_comment(request, slug: str, payload: CommentIn):
     "/comments/{comment_id}/reaction",
     response=ReactionOut,
     auth=django_auth,
-    throttle=[AuthRateThrottle(settings.API_WRITE_THROTTLE)],
+    throttle=WRITE_THROTTLES,
 )
 def toggle_reaction(request, comment_id: int, payload: ReactionIn):
     comment = get_object_or_404(Comment, id=comment_id)

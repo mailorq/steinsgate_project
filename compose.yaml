@@ -18,6 +18,17 @@ services:
     networks:
       - internal
 
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+
   backend:
     build: ./backend
     restart: unless-stopped
@@ -26,15 +37,16 @@ services:
       DB_ENGINE: django.db.backends.postgresql
       DB_HOST: db
       DB_PORT: 5432
-    command: >
-      sh -c "python manage.py migrate --noinput &&
-             python manage.py collectstatic --noinput &&
-             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+      REDIS_URL: redis://redis:6379/0
+    command: sh -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3 --access-logfile /app/logs/access.log --error-logfile /app/logs/worker.log"
     volumes:
       - django_static:/app/staticfiles
       - django_media:/app/media
+      - django_logs:/app/logs
     depends_on:
       db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     networks:
       - internal
@@ -56,6 +68,7 @@ volumes:
   postgres_data:
   django_static:
   django_media:
+  django_logs:
 
 networks:
   internal:
