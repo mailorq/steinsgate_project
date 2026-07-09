@@ -66,13 +66,35 @@ password_email_host = os.getenv('EMAIL_HOST_PASSWORD')
 LOG_DIR = BASE_DIR / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 
+
+def _log_file(filename: str, level: str = "INFO") -> dict:
+    return {
+        "class": "logging.handlers.RotatingFileHandler",
+        "filename": str(LOG_DIR / filename),
+        "maxBytes": 10 * 1024 * 1024,
+        "backupCount": 3,
+        "encoding": "utf-8",
+        "formatter": "standard",
+        "level": level,
+    }
+
+
+_APP_LOGGER = {
+    "handlers": ["application_file", "console"],
+    "level": "INFO",
+    "propagate": False,
+}
+
+# access.log — HTTP-доступ (в проде его пишет gunicorn, здесь — dev-сервер);
+# application.log — доменные события приложений; security.log — блокировки,
+# CSRF и спам; error.log — только ERROR и выше отовсюду; worker.log — gunicorn
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
 
     "formatters": {
         "standard": {
-            "format": "%(asctime)s | %(levelname)s | %(name)s | %(message)s "
+            "format": "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
         },
     },
 
@@ -81,15 +103,36 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "standard",
         },
-        "file": {
-            "class": "logging.FileHandler",
-            "filename": str(LOG_DIR / "django.log"),
-            "formatter": "standard",
+        "access_file": _log_file("access.log"),
+        "application_file": _log_file("application.log"),
+        "security_file": _log_file("security.log"),
+        "error_file": _log_file("error.log", level="ERROR"),
+    },
+
+    "loggers": {
+        "django.server": {
+            "handlers": ["access_file", "console"],
+            "level": "INFO",
+            "propagate": False,
         },
+        "django.security": {
+            "handlers": ["security_file", "console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "security": {
+            "handlers": ["security_file", "console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "accounts": _APP_LOGGER,
+        "catalog": _APP_LOGGER,
+        "comments": _APP_LOGGER,
+        "watch": _APP_LOGGER,
     },
 
     "root": {
-        "handlers": ["console", "file"],
+        "handlers": ["console", "error_file"],
         "level": "INFO",
     },
 }
@@ -175,9 +218,28 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT', ''),
     }
 }
-# Лимиты запросов к API: аутентификация и мутации
-API_AUTH_THROTTLE = os.environ.get("API_AUTH_THROTTLE", "30/m")
+# Redis обслуживает троттлинг, IP-блокировки и кэш агрегатов; без него
+# (локальная разработка) — память процесса
+REDIS_URL = os.environ.get("REDIS_URL", "")
+if REDIS_URL:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': REDIS_URL,
+        }
+    }
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        }
+    }
+
+# Лимиты запросов к API: два окна на группу — всплеск и длинная дистанция
+API_AUTH_THROTTLE = os.environ.get("API_AUTH_THROTTLE", "15/m")
+API_AUTH_THROTTLE_SUSTAINED = os.environ.get("API_AUTH_THROTTLE_SUSTAINED", "100/h")
 API_WRITE_THROTTLE = os.environ.get("API_WRITE_THROTTLE", "20/m")
+API_WRITE_THROTTLE_SUSTAINED = os.environ.get("API_WRITE_THROTTLE_SUSTAINED", "300/h")
 
 # За nginx клиентский IP приходит в X-Forwarded-For; без этого троттлинг
 # видит всех клиентов как один адрес прокси
@@ -188,8 +250,11 @@ if 'test' in sys.argv:
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': ':memory:',
     }
+    CACHES = {'default': {'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'}}
     API_AUTH_THROTTLE = "10000/m"
+    API_AUTH_THROTTLE_SUSTAINED = "10000/h"
     API_WRITE_THROTTLE = "10000/m"
+    API_WRITE_THROTTLE_SUSTAINED = "10000/h"
 
 
 # Password validation
