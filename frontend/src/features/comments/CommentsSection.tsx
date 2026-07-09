@@ -150,36 +150,35 @@ export function CommentsSection({ animeSlug }: CommentsSectionProps) {
                   ))
                 )}
               </div>
+              {totalPages > 1 && (
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-2 md:mt-10 md:gap-4">
+                  {page > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => setPage(page - 1)}
+                      className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100"
+                    >
+                      ← Назад
+                    </button>
+                  )}
+                  <span className="text-sm text-zinc-400 md:text-base">
+                    Страница {page} из {totalPages}
+                  </span>
+                  {page < totalPages && (
+                    <button
+                      type="button"
+                      onClick={() => setPage(page + 1)}
+                      className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100"
+                    >
+                      Далее →
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
-
-      {totalPages > 1 && (
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-2 md:mt-10 md:gap-4">
-          {page > 1 && (
-            <button
-              type="button"
-              onClick={() => setPage(page - 1)}
-              className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100"
-            >
-              ← Назад
-            </button>
-          )}
-          <span className="text-sm text-zinc-400 md:text-base">
-            Страница {page} из {totalPages}
-          </span>
-          {page < totalPages && (
-            <button
-              type="button"
-              onClick={() => setPage(page + 1)}
-              className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100"
-            >
-              Далее →
-            </button>
-          )}
-        </div>
-      )}
     </div>
   );
 }
