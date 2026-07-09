@@ -7,6 +7,7 @@ from django.db.models import Count, Q
 from .models import Comment, CommentLike
 
 logger = logging.getLogger(__name__)
+security_logger = logging.getLogger("security")
 
 URL_PATTERN = r'(https?://\S+|www\.\S+|\w+\.(com|ru|net|org|tk|xyz|bit|cc))'
 MIN_LENGTH = 3
@@ -21,7 +22,7 @@ def create_comment(*, user, anime, text: str) -> Comment:
     cleaned = bleach.clean(text.strip(), tags=[], strip=True)
 
     if re.search(URL_PATTERN, cleaned, re.IGNORECASE):
-        logger.warning(f"Spam attempt blocked: {user.username} tried to post a link.")
+        security_logger.warning(f"Spam attempt blocked, user={user.username}, anime={anime.slug}")
         raise CommentRejected("Ссылки в комментариях запрещены")
 
     if not (MIN_LENGTH <= len(cleaned) <= MAX_LENGTH):
@@ -33,6 +34,7 @@ def create_comment(*, user, anime, text: str) -> Comment:
 
 
 def comments_for_anime(anime):
+    # annotate с агрегатами отбрасывает Meta.ordering, сортировка нужна явная
     return (
         anime.comments
         .select_related("user", "user__profile")
@@ -40,6 +42,7 @@ def comments_for_anime(anime):
             likes=Count("comment_likes", filter=Q(comment_likes__is_like=True)),
             dislikes=Count("comment_likes", filter=Q(comment_likes__is_like=False)),
         )
+        .order_by("-created_at", "-id")
     )
 
 

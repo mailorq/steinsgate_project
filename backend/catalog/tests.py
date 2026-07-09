@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.test import TestCase
 
 from accounts.tests import csrf_headers
@@ -44,6 +45,7 @@ class AnimeModelTest(TestCase):
 class CatalogServiceTest(TestCase):
 
     def setUp(self):
+        cache.clear()
         self.user = User.objects.create_user(username='okabe', password='elpsykongroo')
         self.anime = AnimeDescription.objects.get(slug='steins-gate')
 
@@ -72,7 +74,49 @@ class CatalogServiceTest(TestCase):
             services.rate_anime(user=self.user, anime=self.anime, rating=6)
 
 
+class AggregateCacheTest(TestCase):
+
+    def setUp(self):
+        cache.clear()
+        self.user = User.objects.create_user(username='okabe', password='elpsykongroo')
+        self.anime = AnimeDescription.objects.get(slug='steins-gate')
+
+    def test_average_rating_is_cached(self):
+        services.rate_anime(user=self.user, anime=self.anime, rating=4)
+        self.assertEqual(services.average_rating(self.anime), 4.0)
+
+        with self.assertNumQueries(0):
+            self.assertEqual(services.average_rating(self.anime), 4.0)
+
+    def test_rating_invalidates_average_cache(self):
+        services.rate_anime(user=self.user, anime=self.anime, rating=2)
+        self.assertEqual(services.average_rating(self.anime), 2.0)
+
+        services.rate_anime(user=self.user, anime=self.anime, rating=5)
+
+        self.assertEqual(services.average_rating(self.anime), 5.0)
+
+    def test_total_views_is_cached(self):
+        services.register_view_event(anime=self.anime, user=self.user, ip_address='1.1.1.1')
+        self.assertEqual(services.total_views(self.anime), 1)
+
+        with self.assertNumQueries(0):
+            services.total_views(self.anime)
+
+    def test_anime_list_endpoint_is_cached(self):
+        first = self.client.get('/api/anime')
+        self.assertEqual(first.status_code, 200)
+
+        with self.assertNumQueries(0):
+            second = self.client.get('/api/anime')
+
+        self.assertEqual(first.json(), second.json())
+
+
 class CatalogApiTest(TestCase):
+
+    def setUp(self):
+        cache.clear()
 
     def test_anime_list(self):
         response = self.client.get('/api/anime')

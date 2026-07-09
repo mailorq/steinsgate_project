@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
+from django.db import connection
 from django.test import TestCase
+from django.test.utils import CaptureQueriesContext
 
 from accounts.tests import csrf_headers
 from catalog.models import AnimeDescription
@@ -83,6 +85,42 @@ class CommentModelTest(TestCase):
         self.assertEqual(self.anime.comments.first().user, self.user)
 
 
+class CommentsQueryCountTest(TestCase):
+
+    def setUp(self):
+        self.author = User.objects.create_user(username='okabe', password='elpsykongroo')
+        self.anime = AnimeDescription.objects.get(slug='steins-gate')
+
+    def add_comments(self, count):
+        for i in range(count):
+            Comment.objects.create(user=self.author, anime=self.anime, text=f'Комментарий {i}')
+
+    def query_count(self):
+        with CaptureQueriesContext(connection) as context:
+            response = self.client.get('/api/anime/steins-gate/comments')
+        self.assertEqual(response.status_code, 200)
+        return len(context)
+
+    def test_anonymous_list_has_constant_query_count(self):
+        self.add_comments(2)
+        small = self.query_count()
+
+        self.add_comments(10)
+        large = self.query_count()
+
+        self.assertEqual(small, large)
+
+    def test_authenticated_list_has_constant_query_count(self):
+        self.client.login(username='okabe', password='elpsykongroo')
+        self.add_comments(2)
+        small = self.query_count()
+
+        self.add_comments(10)
+        large = self.query_count()
+
+        self.assertEqual(small, large)
+
+
 class CommentsApiTest(TestCase):
 
     def setUp(self):
@@ -127,6 +165,17 @@ class CommentsApiTest(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(Comment.objects.count(), 0)
+
+    def test_newest_comment_comes_first(self):
+        for i in range(3):
+            Comment.objects.create(user=self.user, anime=self.anime, text=f'Комментарий {i}')
+
+        items = self.client.get(self.url).json()['items']
+
+        self.assertEqual(
+            [item['text'] for item in items],
+            ['Комментарий 2', 'Комментарий 1', 'Комментарий 0'],
+        )
 
     def test_pagination(self):
         for i in range(7):
