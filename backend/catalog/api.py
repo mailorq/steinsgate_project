@@ -2,7 +2,9 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 from ninja import Router
 from ninja.security import django_auth
-from ninja.throttling import AuthRateThrottle
+
+from config.network import get_client_ip
+from config.throttling import auth_throttles
 
 from . import services
 from .models import AnimeDescription
@@ -10,17 +12,12 @@ from .schemas import AnimeDetailOut, AnimeListOut, RatingIn, RatingOut
 
 router = Router(tags=["catalog"])
 
-
-def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        return x_forwarded_for.split(',')[0]
-    return request.META.get('REMOTE_ADDR')
+WRITE_THROTTLES = auth_throttles(settings.API_WRITE_THROTTLE, settings.API_WRITE_THROTTLE_SUSTAINED)
 
 
 @router.get("/anime", response=list[AnimeListOut])
 def list_anime(request):
-    return AnimeDescription.objects.all()
+    return services.anime_list()
 
 
 @router.get("/anime/{slug}", response=AnimeDetailOut)
@@ -46,7 +43,7 @@ def anime_detail(request, slug: str):
         "genres": anime.genres,
         "description": anime.description,
         "avg_rating": services.average_rating(anime),
-        "total_views": anime.views.count(),
+        "total_views": services.total_views(anime),
         "user_rating": user_rating,
     }
 
@@ -55,7 +52,7 @@ def anime_detail(request, slug: str):
     "/anime/{slug}/rating",
     response=RatingOut,
     auth=django_auth,
-    throttle=[AuthRateThrottle(settings.API_WRITE_THROTTLE)],
+    throttle=WRITE_THROTTLES,
 )
 def rate_anime(request, slug: str, payload: RatingIn):
     anime = get_object_or_404(AnimeDescription, slug=slug)
