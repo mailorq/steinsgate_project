@@ -8,7 +8,7 @@ export function Footer() {
         <p className="text-xs text-zinc-500">
           © 2026 Steins;Gate fan site. All Rights Reserved
         </p>
-        <p className="text-xs text-zinc-600">steinsgatefansite@gmail.com</p>
+        <p className="text-xs text-zinc-600">steins;gate@example.com</p>
       </div>
     </footer>
   );

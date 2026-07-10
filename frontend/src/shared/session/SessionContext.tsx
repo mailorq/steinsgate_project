@@ -6,7 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { authApi } from "@/shared/api";
 import type { UserOut } from "@/shared/api";
 
-export const SESSION_QUERY_KEY = ["session"];
+const SESSION_QUERY_KEY = ["session"];
 
 interface SessionContextValue {
   user: UserOut | null;
