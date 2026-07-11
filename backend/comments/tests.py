@@ -6,7 +6,7 @@ from django.test.utils import CaptureQueriesContext
 from accounts.tests import csrf_headers
 from catalog.models import AnimeDescription
 
-from . import services
+from . import moderation, services
 from .models import Comment
 
 User = get_user_model()
@@ -51,6 +51,121 @@ class CommentServiceTest(TestCase):
 
         result = services.toggle_reaction(user=other, comment=comment, is_like=False)
         self.assertEqual((result['likes'], result['dislikes']), (0, 0))
+
+
+class ModerationTest(TestCase):
+
+    REJECTED = [
+        '!!!!!!!!!!!!!!!!!',
+        'тоооооп',
+        'аааааааааа',
+        'лоллоллоллоллол',
+        'ну ты и дебил',
+        'что за хуйня',
+        'fuck this show',
+        'f*ck you',
+        '😭' * 13,
+        ')))))))))))',
+    ]
+    ACCEPTED = [
+        'Лучшее аниме в моей жизни!',
+        'Топ, ждали!!',
+        'ааа, ну такое себе',
+        'блин, вот это поворот',
+        'damn, what an episode',
+        'лол, ну и концовка',
+        'Okabe = Hououin Kyouma!!',
+        '😭' * 10,
+        'El Psy Kongroo',
+    ]
+
+    def test_rejected_samples(self):
+        for text in self.REJECTED:
+            self.assertIsNotNone(moderation.check_comment(text), text)
+
+    def test_accepted_samples(self):
+        for text in self.ACCEPTED:
+            self.assertIsNone(moderation.check_comment(text), text)
+
+
+class CommentLimitsTest(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='okabe', password='elpsykongroo')
+        self.anime = AnimeDescription.objects.get(slug='steins-gate')
+
+    def test_comment_over_limit_rejected(self):
+        with self.assertRaises(services.CommentRejected):
+            services.create_comment(user=self.user, anime=self.anime, text='ня ' * 400)
+
+    def test_spoiler_markers_do_not_count_against_limit(self):
+        text = '||' + 'спойлер тут ' * 70 + '||'
+        comment = services.create_comment(user=self.user, anime=self.anime, text=text)
+
+        self.assertIn('||', comment.text)
+
+    def test_profane_text_inside_spoiler_rejected(self):
+        with self.assertRaises(services.CommentRejected):
+            services.create_comment(user=self.user, anime=self.anime, text='||что за хуйня||')
+
+
+class CommentDeleteTest(TestCase):
+
+    def setUp(self):
+        self.author = User.objects.create_user(username='okabe', password='elpsykongroo')
+        self.other = User.objects.create_user(username='daru', password='super_haker_1')
+        self.admin = User.objects.create_user(
+            username='admin', password='admin_pass_123', is_staff=True
+        )
+        self.anime = AnimeDescription.objects.get(slug='steins-gate')
+        self.comment = Comment.objects.create(
+            user=self.author, anime=self.anime, text='El Psy Kongroo'
+        )
+
+    def delete(self):
+        return self.client.delete(
+            f'/api/comments/{self.comment.id}', **csrf_headers(self.client)
+        )
+
+    def test_author_can_delete_own_comment(self):
+        self.client.login(username='okabe', password='elpsykongroo')
+
+        response = self.delete()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(Comment.objects.filter(id=self.comment.id).exists())
+
+    def test_other_user_cannot_delete(self):
+        self.client.login(username='daru', password='super_haker_1')
+
+        response = self.delete()
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(Comment.objects.filter(id=self.comment.id).exists())
+
+    def test_staff_can_delete_any_comment(self):
+        self.client.login(username='admin', password='admin_pass_123')
+
+        response = self.delete()
+
+        self.assertEqual(response.status_code, 204)
+
+    def test_anonymous_gets_401(self):
+        response = self.client.delete(f'/api/comments/{self.comment.id}')
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_can_delete_flag_in_listing(self):
+        listing_url = '/api/anime/steins-gate/comments'
+
+        self.client.login(username='okabe', password='elpsykongroo')
+        self.assertTrue(self.client.get(listing_url).json()['items'][0]['can_delete'])
+
+        self.client.login(username='daru', password='super_haker_1')
+        self.assertFalse(self.client.get(listing_url).json()['items'][0]['can_delete'])
+
+        self.client.login(username='admin', password='admin_pass_123')
+        self.assertTrue(self.client.get(listing_url).json()['items'][0]['can_delete'])
 
 
 class CommentModelTest(TestCase):

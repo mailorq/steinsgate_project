@@ -18,6 +18,7 @@ class CommentOut(Schema):
     likes: int
     dislikes: int
     my_reaction: str | None
+    can_delete: bool
 
 
 class CommentPageOut(Schema):
@@ -28,7 +29,7 @@ class CommentPageOut(Schema):
 
 
 class CommentIn(Schema):
-    text: str = Field(min_length=3, max_length=2000)
+    text: str = Field(min_length=3, max_length=1000)
 
 
 class ReactionIn(Schema):

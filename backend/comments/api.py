@@ -19,7 +19,7 @@ WRITE_THROTTLES = auth_throttles(settings.API_WRITE_THROTTLE, settings.API_WRITE
 COMMENTS_PER_PAGE = 6
 
 
-def serialize_comment(comment, my_reaction: str | None) -> dict:
+def serialize_comment(comment, my_reaction: str | None, can_delete: bool) -> dict:
     profile = comment.user.profile
     return {
         "id": comment.id,
@@ -33,6 +33,7 @@ def serialize_comment(comment, my_reaction: str | None) -> dict:
         "likes": comment.likes,
         "dislikes": comment.dislikes,
         "my_reaction": my_reaction,
+        "can_delete": can_delete,
     }
 
 
@@ -55,7 +56,11 @@ def list_comments(request, slug: str, page: int = 1):
 
     return {
         "items": [
-            serialize_comment(comment, reactions.get(comment.id))
+            serialize_comment(
+                comment,
+                reactions.get(comment.id),
+                services.can_delete(user=request.user, comment=comment),
+            )
             for comment in page_obj.object_list
         ],
         "page": page_obj.number,
@@ -80,7 +85,22 @@ def create_comment(request, slug: str, payload: CommentIn):
 
     comment.likes = 0
     comment.dislikes = 0
-    return 201, serialize_comment(comment, None)
+    return 201, serialize_comment(comment, None, True)
+
+
+@router.delete(
+    "/comments/{comment_id}",
+    response={204: None, 403: MessageOut},
+    auth=django_auth,
+)
+def delete_comment(request, comment_id: int):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    if not services.can_delete(user=request.user, comment=comment):
+        return 403, {"detail": "Недостаточно прав для удаления"}
+
+    services.delete_comment(user=request.user, comment=comment)
+    return 204, None
 
 
 @router.post(
