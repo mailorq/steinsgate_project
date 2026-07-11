@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { checkComment, MAX_LENGTH } from "@/features/comments/moderation";
+import { SpoilerText } from "@/features/comments/SpoilerText";
 import { ApiError, commentsApi } from "@/shared/api";
 import type { CommentOut, CommentPageOut } from "@/shared/api";
 import { useSession } from "@/shared/session/SessionContext";
 import { Avatar } from "@/shared/ui/Avatar";
+import { Modal } from "@/shared/ui/Modal";
 
 const COMMENTS_OPEN_KEY = "comments_open";
 
@@ -17,9 +20,11 @@ interface CommentsSectionProps {
 export function CommentsSection({ animeSlug }: CommentsSectionProps) {
   const { user } = useSession();
   const queryClient = useQueryClient();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
-  const [error, setError] = useState<string | null>(null);
+  const [warning, setWarning] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<CommentOut | null>(null);
   const [isOpen, setIsOpen] = useState(() => localStorage.getItem(COMMENTS_OPEN_KEY) === "1");
 
   const queryKey = ["comments", animeSlug, page];
@@ -33,13 +38,14 @@ export function CommentsSection({ animeSlug }: CommentsSectionProps) {
     mutationFn: (commentText: string) => commentsApi.create(animeSlug, commentText),
     onSuccess: () => {
       setText("");
-      setError(null);
       setPage(1);
       queryClient.invalidateQueries({ queryKey: ["comments", animeSlug] });
     },
     onError: (requestError) => {
-      setError(
-        requestError instanceof ApiError ? requestError.message : "Не удалось отправить комментарий",
+      setWarning(
+        requestError instanceof ApiError
+          ? requestError.message
+          : "Не удалось отправить комментарий",
       );
     },
   });
@@ -71,6 +77,27 @@ export function CommentsSection({ animeSlug }: CommentsSectionProps) {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: (commentId: number) => commentsApi.remove(commentId),
+    onSuccess: (_, commentId) => {
+      setPendingDelete(null);
+      queryClient.setQueryData<CommentPageOut>(queryKey, (old) =>
+        old
+          ? {
+              ...old,
+              items: old.items.filter((comment) => comment.id !== commentId),
+              total: Math.max(0, old.total - 1),
+            }
+          : old,
+      );
+      queryClient.invalidateQueries({ queryKey: ["comments", animeSlug] });
+    },
+    onError: () => {
+      setPendingDelete(null);
+      setWarning("Не удалось удалить комментарий");
+    },
+  });
+
   const comments = data?.items ?? [];
   const totalPages = data?.total_pages ?? 1;
 
@@ -81,10 +108,42 @@ export function CommentsSection({ animeSlug }: CommentsSectionProps) {
     });
   }
 
+  function wrapSelectionAsSpoiler() {
+    const textarea = textareaRef.current;
+    if (!textarea) {
+      return;
+    }
+    const { selectionStart, selectionEnd, value } = textarea;
+    if (selectionStart === selectionEnd) {
+      return;
+    }
+    const next =
+      value.slice(0, selectionStart) +
+      "||" +
+      value.slice(selectionStart, selectionEnd) +
+      "||" +
+      value.slice(selectionEnd);
+    setText(next);
+    requestAnimationFrame(() => {
+      textarea.focus();
+      textarea.setSelectionRange(selectionStart, selectionEnd + 4);
+    });
+  }
+
+  function closeWarning() {
+    setWarning(null);
+    textareaRef.current?.focus();
+  }
+
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    if (!user || createMutation.isPending) {
+      return;
+    }
     const trimmed = text.trim();
-    if (!user || trimmed.length < 3 || trimmed.length > 2000) {
+    const rejection = checkComment(trimmed);
+    if (rejection) {
+      setWarning(rejection);
       return;
     }
     createMutation.mutate(trimmed);
@@ -114,21 +173,39 @@ export function CommentsSection({ animeSlug }: CommentsSectionProps) {
               {user ? (
                 <form onSubmit={handleSubmit} className="mb-6 md:mb-10">
                   <textarea
+                    ref={textareaRef}
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     rows={3}
+                    maxLength={MAX_LENGTH + 100}
                     placeholder="Написать комментарий..."
                     required
                     className="w-full resize-none rounded-lg border border-zinc-800 bg-zinc-900/80 p-3 text-sm text-zinc-100 placeholder-zinc-600 transition-colors hover:border-zinc-700 focus:border-amber-500/70 focus:outline-none md:p-4"
                   />
-                  {error && <div className="mt-2 text-sm text-red-500">{error}</div>}
-                  <button
-                    type="submit"
-                    disabled={createMutation.isPending}
-                    className="mt-3 inline-flex items-center justify-center rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition-all duration-200 hover:bg-amber-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 md:mt-4"
-                  >
-                    Отправить
-                  </button>
+                  <div className="mt-3 flex items-center gap-3 md:mt-4">
+                    <button
+                      type="submit"
+                      disabled={createMutation.isPending}
+                      className="inline-flex items-center justify-center rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition-all duration-200 hover:bg-amber-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      Отправить
+                    </button>
+                    <button
+                      type="button"
+                      onClick={wrapSelectionAsSpoiler}
+                      title="Скрыть выделенный текст под спойлер"
+                      className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2.5 text-sm text-zinc-500 transition-colors hover:bg-zinc-900 hover:text-amber-400/90"
+                    >
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3.98 8.223A10.477 10.477 0 001.934 12c1.292 4.338 5.31 7.5 10.066 7.5.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243"
+                        />
+                      </svg>
+                      Спойлер
+                    </button>
+                  </div>
                 </form>
               ) : (
                 <div className="mb-6 rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center text-sm text-zinc-500 md:mb-8">
@@ -146,6 +223,7 @@ export function CommentsSection({ animeSlug }: CommentsSectionProps) {
                       comment={comment}
                       canReact={user !== null}
                       onReact={(commentId, isLike) => reactMutation.mutate({ commentId, isLike })}
+                      onDelete={() => setPendingDelete(comment)}
                     />
                   ))
                 )}
@@ -179,6 +257,47 @@ export function CommentsSection({ animeSlug }: CommentsSectionProps) {
           </div>
         </div>
       </div>
+
+      <Modal open={warning !== null} title="Комментарий не отправлен" onClose={closeWarning}>
+        <p className="text-sm leading-relaxed text-zinc-400">{warning}</p>
+        <p className="mt-2 text-sm text-zinc-500">Отредактируйте текст и попробуйте снова.</p>
+        <button
+          type="button"
+          onClick={closeWarning}
+          className="mt-5 w-full rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition-all duration-200 hover:bg-amber-400 active:scale-[0.98]"
+        >
+          Исправить
+        </button>
+      </Modal>
+
+      <Modal
+        open={pendingDelete !== null}
+        title="Удалить комментарий?"
+        onClose={() => setPendingDelete(null)}
+      >
+        <p className="text-sm leading-relaxed break-words text-zinc-400">
+          {pendingDelete && pendingDelete.text.length > 120
+            ? `${pendingDelete.text.slice(0, 120)}…`
+            : pendingDelete?.text}
+        </p>
+        <div className="mt-5 flex gap-3">
+          <button
+            type="button"
+            onClick={() => setPendingDelete(null)}
+            className="flex-1 rounded-lg border border-zinc-700 px-5 py-2.5 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100"
+          >
+            Отмена
+          </button>
+          <button
+            type="button"
+            disabled={deleteMutation.isPending}
+            onClick={() => pendingDelete && deleteMutation.mutate(pendingDelete.id)}
+            className="flex-1 rounded-lg border border-red-900/60 bg-red-950/30 px-5 py-2.5 text-sm font-medium text-red-400 transition-all duration-200 hover:border-red-700 hover:bg-red-950/60 hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            Удалить
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }
@@ -187,13 +306,15 @@ function CommentCard({
   comment,
   canReact,
   onReact,
+  onDelete,
 }: {
   comment: CommentOut;
   canReact: boolean;
   onReact: (commentId: number, isLike: boolean) => void;
+  onDelete: () => void;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800/70 bg-zinc-900/50 p-4 transition-all duration-200 hover:border-zinc-700 hover:bg-zinc-900/80 md:p-5">
+    <div className="group/card rounded-xl border border-zinc-800/70 bg-zinc-900/50 p-4 transition-all duration-200 hover:border-zinc-700 hover:bg-zinc-900/80 md:p-5">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <Avatar
@@ -208,13 +329,27 @@ function CommentCard({
             </div>
           </div>
         </div>
-        <span className="flex-shrink-0 text-xs whitespace-nowrap text-zinc-500 md:text-sm">
-          {formatDate(new Date(comment.created_at))}
-        </span>
+        <div className="flex flex-shrink-0 items-center gap-3">
+          <span className="text-xs whitespace-nowrap text-zinc-500 md:text-sm">
+            {formatDate(new Date(comment.created_at))}
+          </span>
+          {comment.can_delete && (
+            <button
+              type="button"
+              onClick={onDelete}
+              title="Удалить комментарий"
+              className="text-zinc-600 opacity-0 transition-all duration-200 group-hover/card:opacity-100 hover:text-red-400 focus:opacity-100"
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
 
       <p className="overflow-hidden text-sm leading-relaxed break-words hyphens-auto whitespace-pre-line text-zinc-300 md:text-base">
-        {comment.text}
+        <SpoilerText text={comment.text} />
       </p>
 
       {canReact && (

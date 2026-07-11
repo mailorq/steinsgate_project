@@ -52,6 +52,8 @@ export const commentsApi = {
       method: "POST",
       json: { is_like: isLike },
     }),
+  remove: (commentId: number) =>
+    request<void>(`/comments/${commentId}`, { method: "DELETE" }),
 };
 
 export const watchApi = {

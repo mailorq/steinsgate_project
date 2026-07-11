@@ -516,6 +516,46 @@
         ]
       }
     },
+    "/api/comments/{comment_id}": {
+      "delete": {
+        "operationId": "comments_api_delete_comment",
+        "summary": "Delete Comment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "comment_id",
+            "schema": {
+              "title": "Comment Id",
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageOut"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "comments"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
     "/api/comments/{comment_id}/reaction": {
       "post": {
         "operationId": "comments_api_toggle_reaction",
@@ -979,6 +1019,10 @@
               }
             ],
             "title": "My Reaction"
+          },
+          "can_delete": {
+            "title": "Can Delete",
+            "type": "boolean"
           }
         },
         "required": [
@@ -988,7 +1032,8 @@
           "created_at",
           "likes",
           "dislikes",
-          "my_reaction"
+          "my_reaction",
+          "can_delete"
         ],
         "title": "CommentOut",
         "type": "object"
@@ -1027,7 +1072,7 @@
       "CommentIn": {
         "properties": {
           "text": {
-            "maxLength": 2000,
+            "maxLength": 1000,
             "minLength": 3,
             "title": "Text",
             "type": "string"
