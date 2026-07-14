@@ -16,7 +16,7 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - internal
+      - data
 
   redis:
     image: redis:7-alpine
@@ -27,7 +27,7 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - internal
+      - data
 
   backend:
     build: ./backend
@@ -49,20 +49,21 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - internal
+      - edge
+      - data
 
   frontend:
     build: ./frontend
     restart: unless-stopped
     ports:
-      - "4173:4173"
+      - "${APP_PORT:-4173}:4173"
     volumes:
       - django_static:/srv/django-static:ro
       - django_media:/srv/django-media:ro
     depends_on:
       - backend
     networks:
-      - internal
+      - edge
 
 volumes:
   postgres_data:
@@ -71,5 +72,10 @@ volumes:
   django_logs:
 
 networks:
-  internal:
+  # PostgreSQL and Redis are reachable only by the backend and have no host ports.
+  data:
+    driver: bridge
+    internal: true
+  # Backend retains outbound SMTP access and is reachable by the frontend only.
+  edge:
     driver: bridge

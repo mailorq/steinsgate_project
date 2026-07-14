@@ -104,12 +104,13 @@ Copy `.env.example` to `.env` in the repository root and fill in the values.
 | Variable | Purpose |
 |----------|---------|
 | `SECRET_KEY` | Django secret key, required in production |
-| `DEBUG` | `True`/`False`; security headers, cookies and email backend are DEBUG-aware |
+| `DEBUG` | `True`/`False`; controls Django diagnostics but does not disable email delivery |
 | `ALLOWED_HOSTS` | Comma-separated host list |
 | `CSRF_TRUSTED_ORIGINS` | Comma-separated origins for production |
+| `APP_PORT` | Host port for the frontend; use a different value when another project uses `4173` |
 | `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT` | Database connection |
 | `REDIS_URL` | Optional; set by compose in Docker, in-process memory is used without it |
-| `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` | SMTP credentials; in DEBUG emails go to the console |
+| `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` | Gmail SMTP credentials (an App Password is required); used in every mode |
 | `API_AUTH_THROTTLE`, `API_AUTH_THROTTLE_SUSTAINED`, `API_WRITE_THROTTLE`, `API_WRITE_THROTTLE_SUSTAINED` | Rate limit overrides |
 
 ### Run with Docker

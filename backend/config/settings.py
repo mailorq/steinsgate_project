@@ -166,12 +166,10 @@ MIDDLEWARE = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# В DEBUG письма выводятся в консоль, чтобы не тратить SMTP на разработке
+# SMTP is intentional in DEBUG too: verification codes must reach the recipient.
 EMAIL_BACKEND = os.environ.get(
     "EMAIL_BACKEND",
-    'django.core.mail.backends.console.EmailBackend'
-    if DEBUG
-    else 'django.core.mail.backends.smtp.EmailBackend',
+    'django.core.mail.backends.smtp.EmailBackend',
 )
 
 EMAIL_HOST = 'smtp.gmail.com'
