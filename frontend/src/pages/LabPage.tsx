@@ -12,7 +12,8 @@ const WATCH_ORDER = [
 ];
 
 const STATS = [
-  { value: "2 сезона", caption: "Доступно к просмотру" },
+  { value: "Врата Штейна", caption: "Доступно к просмотру" },
+  { value: "Врата Штейна 0", caption: "Доступно к просмотру" },
   { value: "Фильм", caption: "Доступен к просмотру" },
   { value: "Серия 23β", caption: "Доступна к просмотру" },
 ];
@@ -88,16 +89,6 @@ export function LabPage() {
                 <span className="text-xs text-zinc-500">{stat.caption}</span>
               </div>
             ))}
-            <a
-              href="https://github.com/mailorq/SteinsGate_project/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <div className="flex flex-col gap-0.5">
-                <span className="font-mono text-sm text-amber-400">GitHub</span>
-                <span className="text-xs text-zinc-500">Исходный код</span>
-              </div>
-            </a>
             <a href="https://donatello.to/mailorq" target="_blank" rel="noopener noreferrer">
               <div className="flex flex-col gap-0.5">
                 <span className="font-mono text-sm text-amber-400">Поддержка создателей</span>
